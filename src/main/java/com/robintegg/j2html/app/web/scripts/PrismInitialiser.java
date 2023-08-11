@@ -1,4 +1,4 @@
-package com.robintegg.j2html.generator.web.scripts;
+package com.robintegg.j2html.app.web.scripts;
 
 import def.dom.Globals;
 import def.js.Function;

@@ -1,8 +1,6 @@
-package com.robintegg.j2html.generator.generator;
+package com.robintegg.j2html.generator.jsoup;
 
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class JSoupJ2HtmlGeneratorTest {
 

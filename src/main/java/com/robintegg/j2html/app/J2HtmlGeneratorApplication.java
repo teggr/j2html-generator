@@ -1,12 +1,9 @@
-package com.robintegg.j2html.generator;
+package com.robintegg.j2html.app;
 
-import com.robintegg.j2html.spring.J2HtmlAutoConfiguration;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@ImportAutoConfiguration(classes = J2HtmlAutoConfiguration.class)
 public class J2HtmlGeneratorApplication {
 
     public static void main(String[] args) {

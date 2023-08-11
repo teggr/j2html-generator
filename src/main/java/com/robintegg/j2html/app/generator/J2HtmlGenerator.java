@@ -1,4 +1,4 @@
-package com.robintegg.j2html.generator.generator;
+package com.robintegg.j2html.app.generator;
 
 public interface J2HtmlGenerator {
 

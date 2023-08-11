@@ -1,10 +1,9 @@
 package com.robintegg.j2html.generator.openai;
 
-import com.robintegg.j2html.generator.generator.J2HtmlGenerator;
+import com.robintegg.j2html.app.generator.J2HtmlGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.HtmlUtils;
 
 @Component
 @RequiredArgsConstructor
