@@ -27,38 +27,45 @@ public class HomePage implements View {
     Layout.withContent(
         model,
         request,
-        form()
-            .withAction("/generate")
-            .withMethod("post")
-            .attr("hx-post", "/generate")
-            .attr("hx-target", "#generated-code")
-            .attr("hx-select", "#generated-code-insert")
-            .attr("hx-indicator", "#spinner")
-            .with(
-                label("Put your HTML here").withFor("content"),
-                textarea()
-                    .withStyle("display: block; width: 100%;")
-                    .withId("content")
-                    .withName("content")
-                    .withText("<h1>hello j2html community</h1>"),
-                button("Generate j2html").withType("submit")
+        div().withStyle("width: 100%;").with(
+            div().withStyle("float:left; width: 50%;").with(
+                form()
+                    .withAction("/generate")
+                    .withMethod("post")
+                    .attr("hx-post", "/generate")
+                    .attr("hx-target", "#generated-code")
+                    .attr("hx-select", "#generated-code-insert")
+                    .attr("hx-indicator", "#spinner")
+                    .with(
+                        label("Put your HTML here").withFor("content"),
+                        textarea()
+                            .withStyle("display: block; width: 100%;")
+                            .withId("content")
+                            .withName("content")
+                            .withRows("15")
+                            .withText("<h1>hello j2html community</h1>"),
+                        button("Generate j2html").withType("submit")
+                    )
             ),
-        hr(),
-        div().withId("generated-code").with(
-            img()
-                .withId("spinner")
-                .withClass("htmx-indicator")
-                .withSrc("https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/svg-css/90-ring.svg")
+            div().withStyle("float:left; width: 50%;").with(
+                div().withId("generated-code").with(
+                    img()
+                        .withId("spinner")
+                        .withClass("htmx-indicator")
+                        .withSrc("https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/svg-css/90-ring.svg")
+                ),
+                script()
+                    .with(rawHtml("""
+                        document.addEventListener("htmx:load", (event) => {
+                            let code = document.getElementById("generated-code-insert");
+                            if(code != null) {
+                                Prism.highlightAllUnder(code);
+                            }
+                        })
+                        """))
+            )
         ),
-        script()
-            .with(rawHtml("""
-                document.addEventListener("htmx:load", (event) => {
-                    let code = document.getElementById("generated-code-insert");
-                    if(code != null) {
-                        Prism.highlightAllUnder(code);
-                    }
-                })
-                """))
+        div().withStyle("clear: both;")
     ).render(IndentedHtml.into(response.getWriter()));
 
   }
