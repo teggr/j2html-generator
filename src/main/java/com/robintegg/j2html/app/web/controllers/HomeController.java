@@ -1,6 +1,7 @@
 package com.robintegg.j2html.app.web.controllers;
 
 import com.robintegg.j2html.app.generator.J2HtmlGenerator;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,7 +21,8 @@ class HomeController {
     }
 
     @PostMapping("/generate")
-    public String generate(@RequestParam("content") String content, Model model) {
+    public String generate(@RequestParam("content") String content, Model model, HttpServletResponse response) {
+        response.addHeader("HX-Trigger", "code-updated");
         String generatedText = j2HtmlGenerator.generateFromHtml(content);
         model.addAttribute("generatedText", generatedText);
         return "generatePage";

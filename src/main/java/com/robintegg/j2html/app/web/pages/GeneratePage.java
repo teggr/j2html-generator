@@ -38,13 +38,7 @@ public class GeneratePage implements View {
                                 code().withClass("language-java").with(
                                         rawHtml(generatedText)
                                 )
-                        ),
-                        script()
-                                .with(rawHtml("""
-                                        document.addEventListener("htmx:afterProcessNode", (event) => {
-                                            Prism.highlightAll();
-                                        })
-                                        """))
+                        )
                 )
 
         ).render(IndentedHtml.into(response.getWriter()));
