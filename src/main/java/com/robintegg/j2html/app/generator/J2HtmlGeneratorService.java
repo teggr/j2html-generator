@@ -1,21 +1,20 @@
 package com.robintegg.j2html.app.generator;
 
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 import org.springframework.stereotype.Service;
 
 @Service
-public class J2HtmlGeneratorService implements J2HtmlGenerator {
+class J2HtmlGeneratorService implements J2HtmlGenerator {
 
     @Override
     public String generateFromHtml(String htmlText) {
-        Handler h = new Handler();
         DocumentWalker walker = new DocumentWalker();
-        Document document = Jsoup.parse(htmlText);
-        walker.walk( document, h );
-        return h.getJ2HtmlCode();
+        Document document = Jsoup.parse(htmlText, Parser.xmlParser());
+        String j2HtmlCode = walker.walk(document);
+        J2HtmlWrapper j2HtmlWrapper = new J2HtmlWrapper();
+        return j2HtmlWrapper.getJ2HtmlCode(j2HtmlCode);
     }
 
 }
