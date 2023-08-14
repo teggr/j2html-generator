@@ -1,18 +1,18 @@
 package com.robintegg.j2html.app.generator;
 
 import org.jsoup.nodes.Attribute;
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
 
-class DocumentWalker {
+class J2HtmlCodeBuilder {
 
-    public String walk(Document document) {
-        return recursivelyWalkDocumentElements(document.childNode(0), 0);
+    public String walk(Node root) {
+        return recursivelyWalkDocumentElements(root, 0);
     }
 
     private String recursivelyWalkDocumentElements(Node node, int indentationLevel) {
@@ -23,8 +23,9 @@ class DocumentWalker {
         out.append(indent(indentationLevel) + tagName + "(");
 
         boolean childrenProcessed = false;
+        boolean isInputNode = isInputNode(node);
 
-        if (nodeHasOnlyTextChildren(node)) {
+        if (!isInputNode && nodeHasOnlyTextChildren(node)) {
 
             out.append("\"" + nodeTextContent(node).trim() + "\"");
 
@@ -49,11 +50,41 @@ class DocumentWalker {
             for (int i = 0; i < attributesSize; i++) {
                 Attribute attribute = attributeList.get(i);
                 int attributeIndent = indentationLevel + 2;
-                out.append(indent(attributeIndent) + ".attr(\"" + attribute.getKey() + "\"");
-                if (attribute.hasDeclaredValue()) {
-                    out.append(", \"" + attribute.getValue() + "\")");
+
+                if (isClassAttribute(attribute)) {
+
+                    String[] classes = attribute.getValue().split(" ");
+                    if(classes.length > 1) {
+                        out.append(indent(attributeIndent) + ".withClasses("+ Stream.of(classes).map(c -> "\"" + c + "\"").collect(Collectors.joining(", ")) +")");
+                    } else {
+                        out.append(indent(attributeIndent) + ".withClass(\"" + attribute.getValue() + "\")");
+                    }
+
+                } else if (isIdAttribute(attribute)) {
+
+                    out.append(indent(attributeIndent) + ".withId(\"" + attribute.getValue() + "\")");
+
+                } else if (isNameAttribute(attribute)) {
+
+                    out.append(indent(attributeIndent) + ".withName(\"" + attribute.getValue() + "\")");
+
+                } else if (isTypeAttribute(attribute)) {
+
+                    out.append(indent(attributeIndent) + ".withType(\"" + attribute.getValue() + "\")");
+
+                } else if (isHrefAttribute(attribute)) {
+
+                    out.append(indent(attributeIndent) + ".withHref(\"" + attribute.getValue() + "\")");
+
                 } else {
-                    out.append(")");
+
+                    out.append(indent(attributeIndent) + ".attr(\"" + attribute.getKey() + "\"");
+                    if (attribute.hasDeclaredValue()) {
+                        out.append(", \"" + attribute.getValue() + "\")");
+                    } else {
+                        out.append(")");
+                    }
+
                 }
                 if (i < attributesSize - 1) {
                     out.append("\n");
@@ -65,7 +96,7 @@ class DocumentWalker {
 
         if (!childrenProcessed) {
             List<Node> nodeChildren = node.childNodes().stream()
-                    .filter(not(DocumentWalker::isEmptyTextNode)).collect(Collectors.toList());
+                    .filter(not(J2HtmlCodeBuilder::isEmptyTextNode)).collect(Collectors.toList());
             int childNodeSize = nodeChildren.size();
             if (childNodeSize > 0) {
 
@@ -122,8 +153,32 @@ class DocumentWalker {
 
     }
 
+    private boolean isHrefAttribute(Attribute attribute) {
+        return "href".equalsIgnoreCase(attribute.getKey());
+    }
+
+    private boolean isNameAttribute(Attribute attribute) {
+        return "name".equalsIgnoreCase(attribute.getKey());
+    }
+
+    private boolean isTypeAttribute(Attribute attribute) {
+        return "type".equalsIgnoreCase(attribute.getKey());
+    }
+
+    private boolean isIdAttribute(Attribute attribute) {
+        return "id".equalsIgnoreCase(attribute.getKey());
+    }
+
+    private boolean isClassAttribute(Attribute attribute) {
+        return "class".equalsIgnoreCase(attribute.getKey());
+    }
+
+    private boolean isInputNode(Node node) {
+        return "input".equals(node.nodeName());
+    }
+
     private String childNodeTextContent(Node childNode) {
-        return childNode.attr("#text");
+        return escapeOuterHtml(childNode.attr("#text"));
     }
 
     private static String getTagName(Node node) {
@@ -141,7 +196,12 @@ class DocumentWalker {
     private String nodeTextContent(Node node) {
         return node.childNodes().stream()
                 .map(n -> n.outerHtml())
-                .collect(Collectors.joining());
+                .map(html -> escapeOuterHtml(html))
+                .collect(Collectors.joining(""));
+    }
+
+    private static String escapeOuterHtml(String html) {
+        return html.replaceAll("\n", "\\\\n");
     }
 
     private static boolean isEmptyTextNode(Node node) {

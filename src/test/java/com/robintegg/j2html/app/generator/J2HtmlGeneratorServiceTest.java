@@ -1,6 +1,6 @@
 package com.robintegg.j2html.app.generator;
 
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -96,7 +96,7 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 h1()
-                  .attr("class", "title")
+                  .withClass("title")
                 """);
 
     }
@@ -112,8 +112,8 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 h1()
-                  .attr("class", "title")
-                  .attr("id", "t1")
+                  .withClass("title")
+                  .withId("t1")
                 """);
 
     }
@@ -129,7 +129,7 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 h1("hello j2html community")
-                  .attr("class", "title")
+                  .withClass("title")
                 """);
 
     }
@@ -149,10 +149,10 @@ class J2HtmlGeneratorServiceTest {
                                 
                 div(
                   h1("Title")
-                    .attr("class", "title"),
+                    .withClass("title"),
                   p("some text")
-                    .attr("class", "content")
-                    .attr("id", "p1")
+                    .withClass("content")
+                    .withId("p1")
                 )
                 """);
 
@@ -177,7 +177,7 @@ class J2HtmlGeneratorServiceTest {
                   h1("Title"),
                   p(
                     a("a link")
-                      .attr("href", "/some/url")
+                      .withHref("/some/url")
                   )
                 )
                 """);
@@ -213,7 +213,7 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 a()
-                  .attr("href", "/some/url")
+                  .withHref("/some/url")
                   .with(
                     text("hello "),
                     span("j2html community")
@@ -223,45 +223,447 @@ class J2HtmlGeneratorServiceTest {
     }
 
     @Test
-    void shouldOutputMissingFormTableLayout() {
+    void shouldOutputSingleClass() {
 
         String walk = service.generateFromHtml("""
-                <form class="table rows">
-                  <p>
-                      <label for=name>Name</label>
-                      <input type=text id=name name=name>
-                  </p>
-                  <p>
-                      <label for=adr>Address</label>
-                      <input type=text id=adr name=adr>
-                  </p>
-                </form>
+                <h1 class="title"/>
                 """);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                form()
-                     .attr("class", "table rows")
-                     .with(
-                       p(
-                         label("Name")
-                           .attr("for", "name"),
-                         input("")
-                           .attr("type", "text")
-                           .attr("id", "name")
-                           .attr("name", "name")
-                       ),
-                       p(
-                         label("Address")
-                           .attr("for", "adr"),
-                         input("")
-                           .attr("type", "text")
-                           .attr("id", "adr")
-                           .attr("name", "adr")
-                       )
-                     )
+                h1()
+                  .withClass("title")
                 """);
+
+    }
+
+    @Test
+    void shouldOutputMultipleClasses() {
+
+        String walk = service.generateFromHtml("""
+                <h1 class="title other"/>
+                """);
+
+        assertThat(walk).isEqualTo("""
+                import static j2html.TagCreator.*;
+                                
+                h1()
+                  .withClasses("title", "other")
+                """);
+
+    }
+
+    @Nested
+    class MissingCSSSnippets {
+
+        @Test
+        void shouldOutputMissingFormTableLayout() {
+
+            String walk = service.generateFromHtml("""
+                    <form class="table rows">
+                      <p>
+                          <label for=name>Name</label>
+                          <input type=text id=name name=name>
+                      </p>
+                      <p>
+                          <label for=adr>Address</label>
+                          <input type=text id=adr name=adr>
+                      </p>
+                    </form>
+                    """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    form()
+                      .withClasses("table", "rows")
+                      .with(
+                        p(
+                          label("Name")
+                            .attr("for", "name"),
+                          input()
+                            .withType("text")
+                            .withId("name")
+                            .withName("name")
+                        ),
+                        p(
+                          label("Address")
+                            .attr("for", "adr"),
+                          input()
+                            .withType("text")
+                            .withId("adr")
+                            .withName("adr")
+                        )
+                      )
+                    """);
+
+        }
+
+    }
+
+    @Nested
+    class BulmaCSSSnippets {
+
+        @Test
+        void shouldOutputNameField() {
+
+            String walk = service.generateFromHtml("""
+                                    
+                     <div class="field">
+                      <label class="label">Name</label>
+                      <div class="control">
+                        <input class="input" type="text" placeholder="Text input">
+                      </div>
+                    </div>
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClass("field")
+                      .with(
+                        label("Name")
+                          .withClass("label"),
+                        div()
+                          .withClass("control")
+                          .with(
+                            input()
+                              .withClass("input")
+                              .withType("text")
+                              .attr("placeholder", "Text input")
+                          )
+                      )
+                    """);
+
+        }
+
+        @Test
+        void shouldOutputUsernameField() {
+
+            String walk = service.generateFromHtml("""
+                                       
+                                   
+                    <div class="field">
+                      <label class="label">Username</label>
+                      <div class="control has-icons-left has-icons-right">
+                        <input class="input is-success" type="text" placeholder="Text input" value="bulma">
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-user"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                          <i class="fas fa-check"></i>
+                        </span>
+                      </div>
+                      <p class="help is-success">This username is available</p>
+                    </div>
+                                   
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClass("field")
+                      .with(
+                        label("Username")
+                          .withClass("label"),
+                        div()
+                          .withClasses("control", "has-icons-left", "has-icons-right")
+                          .with(
+                            input()
+                              .withClasses("input", "is-success")
+                              .withType("text")
+                              .attr("placeholder", "Text input")
+                              .attr("value", "bulma"),
+                            span()
+                              .withClasses("icon", "is-small", "is-left")
+                              .with(
+                                i()
+                                  .withClasses("fas", "fa-user")
+                              ),
+                            span()
+                              .withClasses("icon", "is-small", "is-right")
+                              .with(
+                                i()
+                                  .withClasses("fas", "fa-check")
+                              )
+                          ),
+                        p("This username is available")
+                          .withClasses("help", "is-success")
+                      )
+                    """);
+
+        }
+
+        @Test
+        void shouldOutputEmailField() {
+
+            String walk = service.generateFromHtml("""
+                                       
+                                   
+                    <div class="field">
+                      <label class="label">Email</label>
+                      <div class="control has-icons-left has-icons-right">
+                        <input class="input is-danger" type="email" placeholder="Email input" value="hello@">
+                        <span class="icon is-small is-left">
+                          <i class="fas fa-envelope"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                          <i class="fas fa-exclamation-triangle"></i>
+                        </span>
+                      </div>
+                      <p class="help is-danger">This email is invalid</p>
+                    </div>
+                                  
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClass("field")
+                      .with(
+                        label("Email")
+                          .withClass("label"),
+                        div()
+                          .withClasses("control", "has-icons-left", "has-icons-right")
+                          .with(
+                            input()
+                              .withClasses("input", "is-danger")
+                              .withType("email")
+                              .attr("placeholder", "Email input")
+                              .attr("value", "hello@"),
+                            span()
+                              .withClasses("icon", "is-small", "is-left")
+                              .with(
+                                i()
+                                  .withClasses("fas", "fa-envelope")
+                              ),
+                            span()
+                              .withClasses("icon", "is-small", "is-right")
+                              .with(
+                                i()
+                                  .withClasses("fas", "fa-exclamation-triangle")
+                              )
+                          ),
+                        p("This email is invalid")
+                          .withClasses("help", "is-danger")
+                      )
+                    """);
+
+        }
+
+        @Test
+        void shouldOutputSubjectSelect() {
+
+            String walk = service.generateFromHtml("""
+                                       
+                                   
+                    <div class="field">
+                      <label class="label">Subject</label>
+                      <div class="control">
+                        <div class="select">
+                          <select>
+                            <option>Select dropdown</option>
+                            <option>With options</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClass("field")
+                      .with(
+                        label("Subject")
+                          .withClass("label"),
+                        div()
+                          .withClass("control")
+                          .with(
+                            div()
+                              .withClass("select")
+                              .with(
+                                select(
+                                  option("Select dropdown"),
+                                  option("With options")
+                                )
+                              )
+                          )
+                      )
+                    """);
+
+        }
+
+        @Test
+        void shouldOutputTextArea() {
+
+            String walk = service.generateFromHtml("""
+                                      
+                                   
+                    <div class="field">
+                      <label class="label">Message</label>
+                      <div class="control">
+                        <textarea class="textarea" placeholder="Textarea"></textarea>
+                      </div>
+                    </div>
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClass("field")
+                      .with(
+                        label("Message")
+                          .withClass("label"),
+                        div()
+                          .withClass("control")
+                          .with(
+                            textarea()
+                              .withClass("textarea")
+                              .attr("placeholder", "Textarea")
+                          )
+                      )
+                    """);
+
+        }
+
+        @Test
+        void shouldOutputCheckbox() {
+
+            String walk = service.generateFromHtml("""
+                                      
+                                   
+                    <div class="field">
+                      <div class="control">
+                        <label class="checkbox">
+                          <input type="checkbox">
+                          I agree to the <a href="#">terms and conditions</a>
+                        </label>
+                      </div>
+                    </div>
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClass("field")
+                      .with(
+                        div()
+                          .withClass("control")
+                          .with(
+                            label()
+                              .withClass("checkbox")
+                              .with(
+                                input()
+                                  .withType("checkbox"),
+                                text("\\n      I agree to the "),
+                                a("terms and conditions")
+                                  .withHref("#")
+                              )
+                          )
+                      )
+                    """);
+
+        }
+
+        @Test
+        void shouldOutputRadio() {
+
+            String walk = service.generateFromHtml("""
+                                       
+                                   
+                    <div class="field">
+                      <div class="control">
+                        <label class="radio">
+                          <input type="radio" name="question">
+                          Yes
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="question">
+                          No
+                        </label>
+                      </div>
+                    </div>
+                                
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClass("field")
+                      .with(
+                        div()
+                          .withClass("control")
+                          .with(
+                            label()
+                              .withClass("radio")
+                              .with(
+                                input()
+                                  .withType("radio")
+                                  .withName("question"),
+                                text("\\n      Yes\\n    ")
+                              ),
+                            label()
+                              .withClass("radio")
+                              .with(
+                                input()
+                                  .withType("radio")
+                                  .withName("question"),
+                                text("\\n      No\\n    ")
+                              )
+                          )
+                      )
+                    """);
+
+        }
+
+        @Test
+        void shouldOutputGroupedButtons() {
+
+            String walk = service.generateFromHtml("""
+                                      
+                                   
+                    <div class="field is-grouped">
+                      <div class="control">
+                        <button class="button is-link">Submit</button>
+                      </div>
+                      <div class="control">
+                        <button class="button is-link is-light">Cancel</button>
+                      </div>
+                    </div>
+                     """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClasses("field", "is-grouped")
+                      .with(
+                        div()
+                          .withClass("control")
+                          .with(
+                            button("Submit")
+                              .withClasses("button", "is-link")
+                          ),
+                        div()
+                          .withClass("control")
+                          .with(
+                            button("Cancel")
+                              .withClasses("button", "is-link", "is-light")
+                          )
+                      )
+                    """);
+
+        }
+
 
     }
 
