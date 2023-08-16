@@ -63,39 +63,39 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.jsweet</groupId>
-                <artifactId>jsweet-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <verbose>true</verbose>
-                    <tsOut>target/ts</tsOut>
-                    <outDir>${project.build.outputDirectory}/static/js</outDir>
-                    <candiesJsOut>webapp/candies</candiesJsOut>
-                    <targetVersion>ES6</targetVersion>
-                    <module>none</module>
-                    <moduleResolution>classic</moduleResolution>
-                    <includes>
-                        <include>com/robintegg/j2html/generator/web/scripts/*.*</include>
-                    </includes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>generate-js</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>jsweet</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.jsweet</groupId>-->
+<!--                <artifactId>jsweet-maven-plugin</artifactId>-->
+<!--                <version>3.1.0</version>-->
+<!--                <configuration>-->
+<!--                    <verbose>true</verbose>-->
+<!--                    <tsOut>target/ts</tsOut>-->
+<!--                    <outDir>${project.build.outputDirectory}/static/js</outDir>-->
+<!--                    <candiesJsOut>webapp/candies</candiesJsOut>-->
+<!--                    <targetVersion>ES6</targetVersion>-->
+<!--                    <module>none</module>-->
+<!--                    <moduleResolution>classic</moduleResolution>-->
+<!--                    <includes>-->
+<!--                        <include>com/robintegg/j2html/generator/web/scripts/*.*</include>-->
+<!--                    </includes>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>generate-js</id>-->
+<!--                        <phase>generate-sources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>jsweet</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                    <execution>-->
+<!--                        <id>clean</id>-->
+<!--                        <phase>clean</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>clean</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -108,6 +108,13 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.robintegg.deploy4j</groupId>
+                <artifactId>deploy4j-maven-plugin</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </plugin>
+
         </plugins>
     </build>
 

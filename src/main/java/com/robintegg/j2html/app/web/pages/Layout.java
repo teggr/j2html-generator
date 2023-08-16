@@ -2,28 +2,21 @@ package com.robintegg.j2html.app.web.pages;
 
 import j2html.tags.DomContent;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
 import static j2html.TagCreator.*;
 
+@Component
+@RequiredArgsConstructor
 public class Layout {
 
-  public static DomContent withContent(Map<String, ?> model, HttpServletRequest request, DomContent... content) {
-    return new Layout(model, request, content).getLayout();
-  }
+  private final Links links;
 
-  private final Map<String, ?> model;
-  private final HttpServletRequest request;
-  private final DomContent[] content;
-
-  public Layout(Map<String, ?> model, HttpServletRequest request, DomContent[] content) {
-    this.model = model;
-    this.request = request;
-    this.content = content;
-  }
-
-  private DomContent getLayout() {
+  public DomContent render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response, DomContent... content) {
 
     String msg = (String) model.get("msg");
 
@@ -61,7 +54,7 @@ public class Layout {
                                 .attr("role", "list")
                                 .with(
                                     li(
-                                        a().withHref("/").with(
+                                        a().withHref(links.of("/")).with(
                                             img()
                                                 .withAlt("logo")
                                                 .withStyle("height: 25px;")
@@ -69,7 +62,7 @@ public class Layout {
                                         )
                                     ),
                                     li(
-                                        a("Generate j2html").withHref("/")
+                                        a("Generate j2html").withHref(links.of("/"))
                                     ),
                                     li(
                                         a("j2html").withHref("https://j2html.com")
