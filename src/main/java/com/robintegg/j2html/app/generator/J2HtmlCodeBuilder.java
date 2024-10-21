@@ -27,7 +27,7 @@ class J2HtmlCodeBuilder {
 
         if (!isInputNode && nodeHasOnlyTextChildren(node)) {
 
-            out.append("\"" + nodeTextContent(node).trim() + "\"");
+            out.append("\"" + nodeTextContent(node).strip() + "\"");
 
             childrenProcessed = true;
 
@@ -196,7 +196,7 @@ class J2HtmlCodeBuilder {
     private String nodeTextContent(Node node) {
         return node.childNodes().stream()
                 .map(n -> n.outerHtml())
-                .map(html -> escapeOuterHtml(html))
+                .map(html -> html.strip())
                 .collect(Collectors.joining(""));
     }
 

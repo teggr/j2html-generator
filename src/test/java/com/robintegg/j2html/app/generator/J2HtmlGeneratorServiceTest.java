@@ -667,4 +667,50 @@ class J2HtmlGeneratorServiceTest {
 
     }
 
+    @Nested
+    class BoostrapExamples {
+
+        @Test
+        void shouldHandleNewlines() {
+
+
+            String walk = service.generateFromHtml("""
+                    <div class="container text-center">
+                            <div class="row">
+                              <div class="col">
+                                Column
+                              </div>
+                              <div class="col">
+                                Column
+                              </div>
+                              <div class="col">
+                                Column
+                              </div>
+                            </div>
+                          </div>
+                    """);
+
+            assertThat(walk).isEqualTo("""
+                    import static j2html.TagCreator.*;
+                                    
+                    div()
+                      .withClasses("container", "text-center")
+                      .with(
+                        div()
+                          .withClass("row")
+                          .with(
+                            div("Column")
+                              .withClass("col"),
+                            div("Column")
+                              .withClass("col"),
+                            div("Column")
+                              .withClass("col")
+                          )
+                      )
+                    """);
+
+        }
+
+    }
+
 }

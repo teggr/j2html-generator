@@ -1,5 +1,6 @@
 package com.robintegg.j2html.app.web.pages;
 
+import dev.rebelcraft.j2html.ext.layout.Containers;
 import j2html.rendering.IndentedHtml;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,36 +19,46 @@ import static j2html.TagCreator.*;
 @Slf4j
 public class GeneratePage implements View {
 
-  private final Layout layout;
+    private final Layout layout;
 
-  @Override
-  public String getContentType() {
-    return MediaType.TEXT_HTML_VALUE;
-  }
+    @Override
+    public String getContentType() {
+        return MediaType.TEXT_HTML_VALUE;
+    }
 
-  @Override
-  public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Override
+    public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    String generatedText = (String) model.get("generatedText");
+        String generatedText = (String) model.get("generatedText");
+        String msg = (String) model.get("msg");
 
-    layout.render(
-        model,
-        request,
-        response,
-        div().withId("generated-code-insert").with(
-            img()
-                .withId("spinner")
-                .withClass("htmx-indicator")
-                .withSrc("https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/svg-css/90-ring.svg"),
-            pre(
-                code().withClass("language-java").with(
-                    rawHtml(generatedText)
-                )
-            )
-        )
+        layout.render(
+                "j2html-generator",
+                model,
+                request,
+                response,
+                div()
+                        .withClass(Containers.container_fluid)
+                        .with(
+                                h1("Generate j2html code from HTML snippets"),
+                                hr(),
+                                Partials.showAlertIfMessage(msg),
+                                div().withId("generated-code-insert")
+                                        .with(
+                                                img()
+                                                        .withId("spinner")
+                                                        .withClass("htmx-indicator")
+                                                        .withSrc("https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/svg-css/90-ring.svg"),
+                                                pre(
+                                                        code().withClass("language-java").with(
+                                                                rawHtml(generatedText)
+                                                        )
+                                                )
+                                        )
+                        )
 
-    ).render(IndentedHtml.into(response.getWriter()));
+        ).render(IndentedHtml.into(response.getWriter()));
 
-  }
+    }
 
 }
