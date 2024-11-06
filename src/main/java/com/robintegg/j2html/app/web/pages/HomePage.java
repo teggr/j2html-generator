@@ -1,6 +1,7 @@
 package com.robintegg.j2html.app.web.pages;
 
 import dev.rebelcraft.j2html.ext.components.Buttons;
+import dev.rebelcraft.j2html.ext.forms.ChecksAndRadios;
 import dev.rebelcraft.j2html.ext.forms.FormControl;
 import dev.rebelcraft.j2html.ext.layout.Containers;
 import dev.rebelcraft.j2html.ext.layout.Grid;
@@ -35,6 +36,7 @@ public class HomePage implements View {
     public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String msg = (String) model.get("msg");
+        boolean includeImports = !model.containsKey("includeImports") || (boolean) model.get("includeImports");
 
         layout.render(
                 "j2html-generator",
@@ -70,10 +72,23 @@ public class HomePage implements View {
                                                                                                         .withFor("content"),
                                                                                                 textarea()
                                                                                                         .withClass(FormControl.form_control)
-                                                                                                        .withStyle("height: 200px;")
+                                                                                                        .withStyle("height: 400px;")
                                                                                                         .withId("content")
                                                                                                         .withName("content")
                                                                                                         .withText("<h1>hello j2html community</h1>")
+                                                                                        ),
+                                                                                div()
+                                                                                        .withClasses(Spacing.mb_3, ChecksAndRadios.form_check)
+                                                                                        .with(
+                                                                                                input()
+                                                                                                        .withType("checkbox")
+                                                                                                        .withClass(ChecksAndRadios.form_check_input)
+                                                                                                        .withId("includeImports")
+                                                                                                        .withName("includeImports")
+                                                                                                        .withCondChecked(includeImports),
+                                                                                                label("Include Imports")
+                                                                                                        .withClass(ChecksAndRadios.form_check_label)
+                                                                                                        .attr("for", "includeImports")
                                                                                         ),
                                                                                 button("Generate j2html")
                                                                                         .withClasses(Buttons.btn, Buttons.btn_primary)
