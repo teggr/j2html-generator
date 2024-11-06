@@ -254,6 +254,51 @@ class J2HtmlGeneratorServiceTest {
 
     }
 
+    @Test
+    void shouldOutputUnescapedTextComments() {
+
+        //language=html
+        String walk = service.generateFromHtml("""
+                <div>
+                    <!-- this is some comment -->
+                </div>
+                """);
+
+        assertThat(walk).isEqualTo("""
+                import static j2html.TagCreator.*;
+                                
+                div(
+                  rawHtml("<!-- this is some comment -->")
+                )
+                """);
+
+    }
+
+    @Test
+    void shouldOutputAllEmptyTextBetweenTextChildren() {
+
+        //language=html
+        String walk = service.generateFromHtml("""
+                <div id='parent'>
+                    <div class="col-4 col-sm-6">
+                      Level 2: .col-4 .col-sm-6
+                    </div>
+                </div>
+                """);
+
+        assertThat(walk).isEqualTo("""
+                import static j2html.TagCreator.*;
+                                
+                div()
+                  .withId("parent")
+                  .with(
+                    div("Level 2: .col-4 .col-sm-6")
+                      .withClasses("col-4", "col-sm-6")
+                  )
+                """);
+
+    }
+
     @Nested
     class MissingCSSSnippets {
 
@@ -712,5 +757,6 @@ class J2HtmlGeneratorServiceTest {
         }
 
     }
+
 
 }

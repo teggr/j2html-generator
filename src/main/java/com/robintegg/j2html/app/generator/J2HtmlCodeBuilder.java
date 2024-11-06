@@ -118,6 +118,8 @@ class J2HtmlCodeBuilder {
 
                     if (isTextNode(childNode)) {
                         out.append(indent(childIndentationLevel) + "text(\"" + childNodeTextContent(childNode) + "\")");
+                    } else if (isCommentNode(childNode)) {
+                        out.append(indent(childIndentationLevel) + "rawHtml(\"<!--" + childNodeCommentContent(childNode) + "-->\")");
                     } else {
                         out.append(recursivelyWalkDocumentElements(childNode, childIndentationLevel));
                     }
@@ -181,6 +183,10 @@ class J2HtmlCodeBuilder {
         return escapeOuterHtml(childNode.attr("#text"));
     }
 
+    private String childNodeCommentContent(Node childNode) {
+        return escapeOuterHtml(childNode.attr("#comment"));
+    }
+
     private static String getTagName(Node node) {
         if (isTextNode(node)) {
             return "text";
@@ -216,6 +222,10 @@ class J2HtmlCodeBuilder {
 
     private static boolean isTextNode(Node node) {
         return "#text".equals(node.nodeName());
+    }
+
+    private static boolean isCommentNode(Node node) {
+        return "#comment".equals(node.nodeName());
     }
 
 
