@@ -12,9 +12,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTagNoAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <h1 />
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -27,9 +27,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTextOnlyTagNoAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <h1>hello j2html community</h1>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -42,12 +42,12 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputTwoChildTextOnlyTagsNoAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <div>
                     <h1>Title</h1>
                     <p>some text</p>
                 </div>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -63,14 +63,14 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputNestedTextOnlyChildrenNoAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <div>
                     <h1>Title</h1>
                     <p>
                         <a>a link</a>
                     </p>
                 </div>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -88,9 +88,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTextOnlyTagWithAttribute() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <h1 class="title"/>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -104,9 +104,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTextOnlyTagWithMultipleAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <h1 class="title" id="t1" />
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -121,9 +121,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTagWithTextWithAttribute() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <h1 class="title">hello j2html community</h1>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -137,12 +137,12 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputTwoChildTextOnlyTagsWithAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <div>
                     <h1 class="title">Title</h1>
                     <p class="content" id="p1">some text</p>
                 </div>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -161,14 +161,14 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputNestedTextOnlyChildrenWithAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <div>
                     <h1>Title</h1>
                     <p>
                         <a href="/some/url">a link</a>
                     </p>
                 </div>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -187,9 +187,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputContainerWithTextNoAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <a>hello <span>j2html community</span></a>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -205,9 +205,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputContainerWithTextAndAttributes() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <a href="/some/url">hello <span>j2html community</span></a>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -225,9 +225,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleClass() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <h1 class="title"/>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -241,9 +241,9 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputMultipleClasses() {
 
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <h1 class="title other"/>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -258,11 +258,11 @@ class J2HtmlGeneratorServiceTest {
     void shouldOutputUnescapedTextComments() {
 
         //language=html
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <div>
                     <!-- this is some comment -->
                 </div>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -278,13 +278,13 @@ class J2HtmlGeneratorServiceTest {
     void shouldOutputAllEmptyTextBetweenTextChildren() {
 
         //language=html
-        String walk = service.generateFromHtml(true, false, """
+        String walk = service.generateFromHtml(null, true, null, """
                 <div id='parent'>
                     <div class="col-4 col-sm-6">
                       Level 2: .col-4 .col-sm-6
                     </div>
                 </div>
-                """, null);
+                """, null, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -305,7 +305,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputMissingFormTableLayout() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                     <form class="table rows">
                       <p>
                           <label for=name>Name</label>
@@ -316,7 +316,7 @@ class J2HtmlGeneratorServiceTest {
                           <input type=text id=adr name=adr>
                       </p>
                     </form>
-                    """, null);
+                    """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -353,7 +353,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputNameField() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                     
                      <div class="field">
                       <label class="label">Name</label>
@@ -361,7 +361,7 @@ class J2HtmlGeneratorServiceTest {
                         <input class="input" type="text" placeholder="Text input">
                       </div>
                     </div>
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -387,7 +387,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputUsernameField() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                        
                                    
                     <div class="field">
@@ -404,7 +404,7 @@ class J2HtmlGeneratorServiceTest {
                       <p class="help is-success">This username is available</p>
                     </div>
                                    
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -445,7 +445,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputEmailField() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                        
                                    
                     <div class="field">
@@ -462,7 +462,7 @@ class J2HtmlGeneratorServiceTest {
                       <p class="help is-danger">This email is invalid</p>
                     </div>
                                   
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -503,7 +503,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputSubjectSelect() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                        
                                    
                     <div class="field">
@@ -517,7 +517,7 @@ class J2HtmlGeneratorServiceTest {
                         </div>
                       </div>
                     </div>
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -547,7 +547,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputTextArea() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                       
                                    
                     <div class="field">
@@ -556,7 +556,7 @@ class J2HtmlGeneratorServiceTest {
                         <textarea class="textarea" placeholder="Textarea"></textarea>
                       </div>
                     </div>
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -581,7 +581,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputCheckbox() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                       
                                    
                     <div class="field">
@@ -592,7 +592,7 @@ class J2HtmlGeneratorServiceTest {
                         </label>
                       </div>
                     </div>
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -621,7 +621,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputRadio() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                        
                                    
                     <div class="field">
@@ -637,7 +637,7 @@ class J2HtmlGeneratorServiceTest {
                       </div>
                     </div>
                                 
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -673,7 +673,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputGroupedButtons() {
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                                       
                                    
                     <div class="field is-grouped">
@@ -684,7 +684,7 @@ class J2HtmlGeneratorServiceTest {
                         <button class="button is-link is-light">Cancel</button>
                       </div>
                     </div>
-                     """, null);
+                     """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -719,7 +719,7 @@ class J2HtmlGeneratorServiceTest {
         void shouldHandleNewlines() {
 
 
-            String walk = service.generateFromHtml(true, false, """
+            String walk = service.generateFromHtml(null, true, null, """
                     <div class="container text-center">
                             <div class="row">
                               <div class="col">
@@ -733,7 +733,7 @@ class J2HtmlGeneratorServiceTest {
                               </div>
                             </div>
                           </div>
-                    """, null);
+                    """, null, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;

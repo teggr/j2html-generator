@@ -22,19 +22,23 @@ class HomeController {
 
     @PostMapping("/generate")
     public String generate(
+            @RequestParam(name= "packageName", required = false) String packageName,
             @RequestParam(name="includeImports", required = false) boolean includeImports,
-            @RequestParam(name="useExtensions", required = false) boolean useExtensions,
+            @RequestParam(name= "tagLibraryId", required = false) String tagLibraryId,
             @RequestParam(name="template", required = false) String template,
+            @RequestParam(name="testName", required = false) String testName,
             @RequestParam("content") String content,
             Model model,
             HttpServletResponse response
     ) {
         response.addHeader("HX-Trigger", "code-updated");
-        String generatedText = j2HtmlGenerator.generateFromHtml(includeImports, useExtensions, content, template);
+        String generatedText = j2HtmlGenerator.generateFromHtml(packageName, includeImports, tagLibraryId, content, template, testName);
         model.addAttribute("generatedText", generatedText);
         model.addAttribute("includeImports", includeImports);
-        model.addAttribute("useExtensions", useExtensions);
+        model.addAttribute("tagLibraryId", tagLibraryId);
         model.addAttribute("template", template);
+        model.addAttribute("packageName", packageName);
+        model.addAttribute("testName", testName);
         return "generatePage";
     }
 

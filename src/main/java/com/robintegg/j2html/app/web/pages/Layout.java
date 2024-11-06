@@ -105,9 +105,10 @@ public class Layout {
                                                                                         .withHref(links.of("/"))
                                                                         ),
                                                                         li().withClass(nav_item).with(
-                                                                                a("j2html")
+                                                                                a("What is j2html?")
                                                                                         .withClass(nav_link)
                                                                                         .withHref("https://j2html.com")
+                                                                                        .withTarget("_blank")
                                                                         )
                                                                 )
                                                 )

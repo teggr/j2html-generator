@@ -5,16 +5,28 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Node;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 class J2HtmlGeneratorService implements J2HtmlGenerator {
 
+    private static Map<String,TagLibrary> tagLibrariesById = new HashMap();
+
+    static {
+        tagLibrariesById.put("j2htmlExtensions", new J2HtmlTagLibrary());
+    }
+
     @Override
-    public String generateFromHtml(boolean includeImports, boolean useExtensions, String htmlText, String template) {
-        J2HtmlCodeBuilder walker = new J2HtmlCodeBuilder(useExtensions);
+    public String generateFromHtml(String packageName, boolean includeImports, String tagLibraryId, String htmlText, String template, String testName) {
+
+        TagLibrary tagLibrary = tagLibrariesById.getOrDefault(tagLibraryId, new DefaultTagLibrary());
+
+        J2HtmlCodeBuilder walker = new J2HtmlCodeBuilder(tagLibrary);
         String trimmedHtml = htmlText.trim();
         Document document = Jsoup.parse(trimmedHtml);
         String j2HtmlCode = walker.walk(startLocation(trimmedHtml, document));
-        J2HtmlWrapper j2HtmlWrapper = new J2HtmlWrapper(includeImports, useExtensions, template);
+        J2HtmlWrapper j2HtmlWrapper = new J2HtmlWrapper(packageName, includeImports, tagLibrary, template, testName);
         return j2HtmlWrapper.getJ2HtmlCode(trimmedHtml, j2HtmlCode);
     }
 

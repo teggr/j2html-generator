@@ -11,10 +11,10 @@ import static java.util.function.Predicate.not;
 
 class J2HtmlCodeBuilder {
 
-    private final boolean useExtensions;
+    private final TagLibrary tagLibrary;
 
-    public J2HtmlCodeBuilder(boolean useExtensions) {
-        this.useExtensions = useExtensions;
+    public J2HtmlCodeBuilder(TagLibrary tagLibrary) {
+        this.tagLibrary = tagLibrary;
     }
 
     public String walk(Node root) {
@@ -125,11 +125,7 @@ class J2HtmlCodeBuilder {
                     if (isTextNode(childNode)) {
                         out.append(indent(childIndentationLevel) + "text(\"" + childNodeTextContent(childNode) + "\")");
                     } else if (isCommentNode(childNode)) {
-                        if(useExtensions) {
-                            out.append(indent(childIndentationLevel) + "comment(\"" + childNodeCommentContent(childNode) + "\")");
-                        } else {
-                            out.append(indent(childIndentationLevel) + "rawHtml(\"<!--" + childNodeCommentContent(childNode) + "-->\")");
-                        }
+                        out.append(indent(childIndentationLevel) + tagLibrary.comment( childNodeCommentContent(childNode) ) );
                     } else {
                         out.append(recursivelyWalkDocumentElements(childNode, childIndentationLevel));
                     }

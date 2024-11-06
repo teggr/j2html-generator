@@ -37,9 +37,11 @@ public class HomePage implements View {
     public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String msg = (String) model.get("msg");
+        String packageName = (String) model.get("packageName");
         boolean includeImports = !model.containsKey("includeImports") || (boolean) model.get("includeImports"); // default true
-        boolean useExtensions = model.containsKey("useExtensions") && (boolean) model.get("useExtensions"); // default false
+        String tagLibraryId = (String) model.get("tagLibraryId");
         String template = (String) model.get("template");
+        String testName = (String) model.get("testName");
 
         layout.render(
                 "j2html-generator",
@@ -75,10 +77,23 @@ public class HomePage implements View {
                                                                                                         .withFor("content"),
                                                                                                 textarea()
                                                                                                         .withClass(FormControl.form_control)
-                                                                                                        .withStyle("height: 400px;")
+                                                                                                        .withStyle("height: 350px;")
                                                                                                         .withId("content")
                                                                                                         .withName("content")
                                                                                                         .withText("<h1>hello j2html community</h1>")
+                                                                                        ),
+                                                                                div()
+                                                                                        .withClass(Spacing.mb_3)
+                                                                                        .with(
+                                                                                                label("Package Name")
+                                                                                                        .attr("for", "packageName")
+                                                                                                        .withClass(FormControl.form_label),
+                                                                                                input()
+                                                                                                        .withClass(FormControl.form_control)
+                                                                                                        .withId("packageName")
+                                                                                                        .attr("aria-describedby", "packageName")
+                                                                                                        .withName("packageName")
+                                                                                                        .withValue(packageName)
                                                                                         ),
                                                                                 div()
                                                                                         .withClasses(Spacing.mb_3, ChecksAndRadios.form_check)
@@ -99,31 +114,45 @@ public class HomePage implements View {
                                                                                                 input()
                                                                                                         .withType("checkbox")
                                                                                                         .withClass(ChecksAndRadios.form_check_input)
-                                                                                                        .withId("useExtensions")
-                                                                                                        .withName("useExtensions")
-                                                                                                        .withCondChecked(useExtensions),
-                                                                                                label("Use J2Html Extensions Library")
+                                                                                                        .withId("tagLibraryId")
+                                                                                                        .withName("tagLibraryId")
+                                                                                                        .withCondChecked("j2htmlExtensions".equals(tagLibraryId))
+                                                                                                        .withValue("j2htmlExtensions"),
+                                                                                                label("Use j2html Extensions Library")
                                                                                                         .withClass(ChecksAndRadios.form_check_label)
-                                                                                                        .attr("for", "useExtensions")
+                                                                                                        .attr("for", "tagLibraryId")
                                                                                         ),
                                                                                 div()
                                                                                         .withClasses(Spacing.mb_3)
                                                                                         .with(
-                                                                                            select()
-                                                                                                    .withClass(Select.form_select)
-                                                                                                    .attr("aria-label", "Select Template")
-                                                                                                    .withName("template")
-                                                                                                    .with(
-                                                                                                            option("Choose a template")
-                                                                                                                    .attr("selected")
-                                                                                                                    .withCondSelected( template == null ),
-                                                                                                            option("UI Test")
-                                                                                                                    .attr("value", "uitest")
-                                                                                                                    .withCondSelected( "uitest".equals(template) ),
-                                                                                                            option("UI Test Snippet")
-                                                                                                                    .attr("value", "uitestsnippet")
-                                                                                                                    .withCondSelected( "uitestsnippet".equals(template) )
-                                                                                                    )
+                                                                                                select()
+                                                                                                        .withClass(Select.form_select)
+                                                                                                        .attr("aria-label", "Select Template")
+                                                                                                        .withName("template")
+                                                                                                        .with(
+                                                                                                                option("Choose a template")
+                                                                                                                        .attr("selected")
+                                                                                                                        .withCondSelected(template == null),
+                                                                                                                option("UI Test")
+                                                                                                                        .attr("value", "uitest")
+                                                                                                                        .withCondSelected("uitest".equals(template)),
+                                                                                                                option("UI Test Snippet")
+                                                                                                                        .attr("value", "uitestsnippet")
+                                                                                                                        .withCondSelected("uitestsnippet".equals(template))
+                                                                                                        )
+                                                                                        ),
+                                                                                div()
+                                                                                        .withClass(Spacing.mb_3)
+                                                                                        .with(
+                                                                                                label("Test Name")
+                                                                                                        .attr("for", "testName")
+                                                                                                        .withClass(FormControl.form_label),
+                                                                                                input()
+                                                                                                        .withClass(FormControl.form_control)
+                                                                                                        .withId("testName")
+                                                                                                        .attr("aria-describedby", "testName")
+                                                                                                        .withName("testName")
+                                                                                                        .withValue(testName)
                                                                                         ),
                                                                                 button("Generate j2html")
                                                                                         .withClasses(Buttons.btn, Buttons.btn_primary)
