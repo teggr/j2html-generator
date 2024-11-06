@@ -3,6 +3,7 @@ package com.robintegg.j2html.app.web.pages;
 import dev.rebelcraft.j2html.ext.components.Buttons;
 import dev.rebelcraft.j2html.ext.forms.ChecksAndRadios;
 import dev.rebelcraft.j2html.ext.forms.FormControl;
+import dev.rebelcraft.j2html.ext.forms.Select;
 import dev.rebelcraft.j2html.ext.layout.Containers;
 import dev.rebelcraft.j2html.ext.layout.Grid;
 import dev.rebelcraft.j2html.ext.utilities.Spacing;
@@ -36,8 +37,9 @@ public class HomePage implements View {
     public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         String msg = (String) model.get("msg");
-        boolean includeImports = !model.containsKey("includeImports") || (boolean) model.get("includeImports");
-        boolean useExtensions = model.containsKey("useExtensions") && (boolean) model.get("useExtensions");
+        boolean includeImports = !model.containsKey("includeImports") || (boolean) model.get("includeImports"); // default true
+        boolean useExtensions = model.containsKey("useExtensions") && (boolean) model.get("useExtensions"); // default false
+        String template = (String) model.get("template");
 
         layout.render(
                 "j2html-generator",
@@ -103,6 +105,25 @@ public class HomePage implements View {
                                                                                                 label("Use J2Html Extensions Library")
                                                                                                         .withClass(ChecksAndRadios.form_check_label)
                                                                                                         .attr("for", "useExtensions")
+                                                                                        ),
+                                                                                div()
+                                                                                        .withClasses(Spacing.mb_3)
+                                                                                        .with(
+                                                                                            select()
+                                                                                                    .withClass(Select.form_select)
+                                                                                                    .attr("aria-label", "Select Template")
+                                                                                                    .withName("template")
+                                                                                                    .with(
+                                                                                                            option("Choose a template")
+                                                                                                                    .attr("selected")
+                                                                                                                    .withCondSelected( template == null ),
+                                                                                                            option("UI Test")
+                                                                                                                    .attr("value", "uitest")
+                                                                                                                    .withCondSelected( "uitest".equals(template) ),
+                                                                                                            option("UI Test Snippet")
+                                                                                                                    .attr("value", "uitestsnippet")
+                                                                                                                    .withCondSelected( "uitestsnippet".equals(template) )
+                                                                                                    )
                                                                                         ),
                                                                                 button("Generate j2html")
                                                                                         .withClasses(Buttons.btn, Buttons.btn_primary)

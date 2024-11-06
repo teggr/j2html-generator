@@ -14,7 +14,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <h1 />
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -29,7 +29,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <h1>hello j2html community</h1>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -47,7 +47,7 @@ class J2HtmlGeneratorServiceTest {
                     <h1>Title</h1>
                     <p>some text</p>
                 </div>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -70,7 +70,7 @@ class J2HtmlGeneratorServiceTest {
                         <a>a link</a>
                     </p>
                 </div>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -90,7 +90,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <h1 class="title"/>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -106,7 +106,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <h1 class="title" id="t1" />
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -123,7 +123,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <h1 class="title">hello j2html community</h1>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -142,7 +142,7 @@ class J2HtmlGeneratorServiceTest {
                     <h1 class="title">Title</h1>
                     <p class="content" id="p1">some text</p>
                 </div>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -168,7 +168,7 @@ class J2HtmlGeneratorServiceTest {
                         <a href="/some/url">a link</a>
                     </p>
                 </div>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -189,7 +189,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <a>hello <span>j2html community</span></a>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -207,7 +207,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <a href="/some/url">hello <span>j2html community</span></a>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -227,7 +227,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <h1 class="title"/>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -243,7 +243,7 @@ class J2HtmlGeneratorServiceTest {
 
         String walk = service.generateFromHtml(true, false, """
                 <h1 class="title other"/>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -262,7 +262,7 @@ class J2HtmlGeneratorServiceTest {
                 <div>
                     <!-- this is some comment -->
                 </div>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -284,7 +284,7 @@ class J2HtmlGeneratorServiceTest {
                       Level 2: .col-4 .col-sm-6
                     </div>
                 </div>
-                """);
+                """, null);
 
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
@@ -316,7 +316,7 @@ class J2HtmlGeneratorServiceTest {
                           <input type=text id=adr name=adr>
                       </p>
                     </form>
-                    """);
+                    """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -361,7 +361,7 @@ class J2HtmlGeneratorServiceTest {
                         <input class="input" type="text" placeholder="Text input">
                       </div>
                     </div>
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -404,7 +404,7 @@ class J2HtmlGeneratorServiceTest {
                       <p class="help is-success">This username is available</p>
                     </div>
                                    
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -462,7 +462,7 @@ class J2HtmlGeneratorServiceTest {
                       <p class="help is-danger">This email is invalid</p>
                     </div>
                                   
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -517,7 +517,7 @@ class J2HtmlGeneratorServiceTest {
                         </div>
                       </div>
                     </div>
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -556,7 +556,7 @@ class J2HtmlGeneratorServiceTest {
                         <textarea class="textarea" placeholder="Textarea"></textarea>
                       </div>
                     </div>
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -592,7 +592,7 @@ class J2HtmlGeneratorServiceTest {
                         </label>
                       </div>
                     </div>
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -637,7 +637,7 @@ class J2HtmlGeneratorServiceTest {
                       </div>
                     </div>
                                 
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -684,7 +684,7 @@ class J2HtmlGeneratorServiceTest {
                         <button class="button is-link is-light">Cancel</button>
                       </div>
                     </div>
-                     """);
+                     """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;
@@ -733,7 +733,7 @@ class J2HtmlGeneratorServiceTest {
                               </div>
                             </div>
                           </div>
-                    """);
+                    """, null);
 
             assertThat(walk).isEqualTo("""
                     import static j2html.TagCreator.*;

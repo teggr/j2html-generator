@@ -24,15 +24,17 @@ class HomeController {
     public String generate(
             @RequestParam(name="includeImports", required = false) boolean includeImports,
             @RequestParam(name="useExtensions", required = false) boolean useExtensions,
+            @RequestParam(name="template", required = false) String template,
             @RequestParam("content") String content,
             Model model,
             HttpServletResponse response
     ) {
         response.addHeader("HX-Trigger", "code-updated");
-        String generatedText = j2HtmlGenerator.generateFromHtml(includeImports, useExtensions, content);
+        String generatedText = j2HtmlGenerator.generateFromHtml(includeImports, useExtensions, content, template);
         model.addAttribute("generatedText", generatedText);
         model.addAttribute("includeImports", includeImports);
         model.addAttribute("useExtensions", useExtensions);
+        model.addAttribute("template", template);
         return "generatePage";
     }
 
