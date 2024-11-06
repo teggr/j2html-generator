@@ -21,11 +21,18 @@ class HomeController {
     }
 
     @PostMapping("/generate")
-    public String generate(@RequestParam(name="includeImports", required = false) boolean includeImports,  @RequestParam("content") String content, Model model, HttpServletResponse response) {
+    public String generate(
+            @RequestParam(name="includeImports", required = false) boolean includeImports,
+            @RequestParam(name="useExtensions", required = false) boolean useExtensions,
+            @RequestParam("content") String content,
+            Model model,
+            HttpServletResponse response
+    ) {
         response.addHeader("HX-Trigger", "code-updated");
-        String generatedText = j2HtmlGenerator.generateFromHtml(includeImports, content);
+        String generatedText = j2HtmlGenerator.generateFromHtml(includeImports, useExtensions, content);
         model.addAttribute("generatedText", generatedText);
         model.addAttribute("includeImports", includeImports);
+        model.addAttribute("useExtensions", useExtensions);
         return "generatePage";
     }
 

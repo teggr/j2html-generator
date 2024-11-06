@@ -11,6 +11,12 @@ import static java.util.function.Predicate.not;
 
 class J2HtmlCodeBuilder {
 
+    private final boolean useExtensions;
+
+    public J2HtmlCodeBuilder(boolean useExtensions) {
+        this.useExtensions = useExtensions;
+    }
+
     public String walk(Node root) {
         return recursivelyWalkDocumentElements(root, 0);
     }
@@ -119,7 +125,11 @@ class J2HtmlCodeBuilder {
                     if (isTextNode(childNode)) {
                         out.append(indent(childIndentationLevel) + "text(\"" + childNodeTextContent(childNode) + "\")");
                     } else if (isCommentNode(childNode)) {
-                        out.append(indent(childIndentationLevel) + "rawHtml(\"<!--" + childNodeCommentContent(childNode) + "-->\")");
+                        if(useExtensions) {
+                            out.append(indent(childIndentationLevel) + "comment(\"" + childNodeCommentContent(childNode) + "\")");
+                        } else {
+                            out.append(indent(childIndentationLevel) + "rawHtml(\"<!--" + childNodeCommentContent(childNode) + "-->\")");
+                        }
                     } else {
                         out.append(recursivelyWalkDocumentElements(childNode, childIndentationLevel));
                     }

@@ -37,6 +37,7 @@ public class HomePage implements View {
 
         String msg = (String) model.get("msg");
         boolean includeImports = !model.containsKey("includeImports") || (boolean) model.get("includeImports");
+        boolean useExtensions = model.containsKey("useExtensions") && (boolean) model.get("useExtensions");
 
         layout.render(
                 "j2html-generator",
@@ -90,6 +91,19 @@ public class HomePage implements View {
                                                                                                         .withClass(ChecksAndRadios.form_check_label)
                                                                                                         .attr("for", "includeImports")
                                                                                         ),
+                                                                                div()
+                                                                                        .withClasses(Spacing.mb_3, ChecksAndRadios.form_check)
+                                                                                        .with(
+                                                                                                input()
+                                                                                                        .withType("checkbox")
+                                                                                                        .withClass(ChecksAndRadios.form_check_input)
+                                                                                                        .withId("useExtensions")
+                                                                                                        .withName("useExtensions")
+                                                                                                        .withCondChecked(useExtensions),
+                                                                                                label("Use J2Html Extensions Library")
+                                                                                                        .withClass(ChecksAndRadios.form_check_label)
+                                                                                                        .attr("for", "useExtensions")
+                                                                                        ),
                                                                                 button("Generate j2html")
                                                                                         .withClasses(Buttons.btn, Buttons.btn_primary)
                                                                                         .withType("submit")
@@ -104,6 +118,7 @@ public class HomePage implements View {
                                                                                 .withClass("htmx-indicator")
                                                                                 .withSrc("https://raw.githubusercontent.com/n3r4zzurr0/svg-spinners/main/svg-css/90-ring.svg")
                                                                 ),
+                                                                //language=javascript
                                                                 script()
                                                                         .with(rawHtml("""
                                                                                 document.addEventListener("htmx:load", (event) => {

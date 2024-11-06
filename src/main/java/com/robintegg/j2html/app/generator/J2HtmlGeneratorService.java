@@ -9,11 +9,11 @@ import org.springframework.stereotype.Service;
 class J2HtmlGeneratorService implements J2HtmlGenerator {
 
     @Override
-    public String generateFromHtml(boolean includeImports, String htmlText) {
-        J2HtmlCodeBuilder walker = new J2HtmlCodeBuilder();
+    public String generateFromHtml(boolean includeImports, boolean useExtensions, String htmlText) {
+        J2HtmlCodeBuilder walker = new J2HtmlCodeBuilder(useExtensions);
         Document document = Jsoup.parse(htmlText.trim());
         String j2HtmlCode = walker.walk(startLocation(htmlText, document));
-        J2HtmlWrapper j2HtmlWrapper = new J2HtmlWrapper(includeImports);
+        J2HtmlWrapper j2HtmlWrapper = new J2HtmlWrapper(includeImports, useExtensions);
         return j2HtmlWrapper.getJ2HtmlCode(j2HtmlCode);
     }
 

@@ -12,7 +12,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTagNoAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <h1 />
                 """);
 
@@ -27,7 +27,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTextOnlyTagNoAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <h1>hello j2html community</h1>
                 """);
 
@@ -42,7 +42,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputTwoChildTextOnlyTagsNoAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <div>
                     <h1>Title</h1>
                     <p>some text</p>
@@ -63,7 +63,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputNestedTextOnlyChildrenNoAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <div>
                     <h1>Title</h1>
                     <p>
@@ -88,7 +88,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTextOnlyTagWithAttribute() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <h1 class="title"/>
                 """);
 
@@ -104,7 +104,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTextOnlyTagWithMultipleAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <h1 class="title" id="t1" />
                 """);
 
@@ -121,7 +121,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleTagWithTextWithAttribute() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <h1 class="title">hello j2html community</h1>
                 """);
 
@@ -137,7 +137,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputTwoChildTextOnlyTagsWithAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <div>
                     <h1 class="title">Title</h1>
                     <p class="content" id="p1">some text</p>
@@ -161,7 +161,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputNestedTextOnlyChildrenWithAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <div>
                     <h1>Title</h1>
                     <p>
@@ -187,7 +187,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputContainerWithTextNoAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <a>hello <span>j2html community</span></a>
                 """);
 
@@ -205,7 +205,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputContainerWithTextAndAttributes() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <a href="/some/url">hello <span>j2html community</span></a>
                 """);
 
@@ -225,7 +225,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputSingleClass() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <h1 class="title"/>
                 """);
 
@@ -241,7 +241,7 @@ class J2HtmlGeneratorServiceTest {
     @Test
     void shouldOutputMultipleClasses() {
 
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <h1 class="title other"/>
                 """);
 
@@ -258,7 +258,7 @@ class J2HtmlGeneratorServiceTest {
     void shouldOutputUnescapedTextComments() {
 
         //language=html
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <div>
                     <!-- this is some comment -->
                 </div>
@@ -278,7 +278,7 @@ class J2HtmlGeneratorServiceTest {
     void shouldOutputAllEmptyTextBetweenTextChildren() {
 
         //language=html
-        String walk = service.generateFromHtml(true, """
+        String walk = service.generateFromHtml(true, false, """
                 <div id='parent'>
                     <div class="col-4 col-sm-6">
                       Level 2: .col-4 .col-sm-6
@@ -305,7 +305,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputMissingFormTableLayout() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                     <form class="table rows">
                       <p>
                           <label for=name>Name</label>
@@ -353,7 +353,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputNameField() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                     
                      <div class="field">
                       <label class="label">Name</label>
@@ -387,7 +387,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputUsernameField() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                        
                                    
                     <div class="field">
@@ -445,7 +445,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputEmailField() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                        
                                    
                     <div class="field">
@@ -503,7 +503,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputSubjectSelect() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                        
                                    
                     <div class="field">
@@ -547,7 +547,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputTextArea() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                       
                                    
                     <div class="field">
@@ -581,7 +581,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputCheckbox() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                       
                                    
                     <div class="field">
@@ -621,7 +621,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputRadio() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                        
                                    
                     <div class="field">
@@ -673,7 +673,7 @@ class J2HtmlGeneratorServiceTest {
         @Test
         void shouldOutputGroupedButtons() {
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                                       
                                    
                     <div class="field is-grouped">
@@ -719,7 +719,7 @@ class J2HtmlGeneratorServiceTest {
         void shouldHandleNewlines() {
 
 
-            String walk = service.generateFromHtml(true, """
+            String walk = service.generateFromHtml(true, false, """
                     <div class="container text-center">
                             <div class="row">
                               <div class="col">
