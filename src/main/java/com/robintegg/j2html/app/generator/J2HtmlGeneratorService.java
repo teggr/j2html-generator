@@ -22,7 +22,7 @@ class J2HtmlGeneratorService implements J2HtmlGenerator {
 
         TagLibrary tagLibrary = tagLibrariesById.getOrDefault(tagLibraryId, new DefaultTagLibrary());
 
-        J2HtmlCodeBuilder walker = new J2HtmlCodeBuilder(tagLibrary);
+        HtmlToJ2HtmlConverter walker = new HtmlToJ2HtmlConverter(tagLibrary);
         String trimmedHtml = htmlText.trim();
         Document document = Jsoup.parse(trimmedHtml);
         String j2HtmlCode = walker.walk(startLocation(trimmedHtml, document));

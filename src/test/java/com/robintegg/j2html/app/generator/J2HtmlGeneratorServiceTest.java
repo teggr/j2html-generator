@@ -1,8 +1,13 @@
 package com.robintegg.j2html.app.generator;
 
+import j2html.rendering.IndentedHtml;
+import j2html.tags.UnescapedText;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
+import static j2html.TagCreator.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class J2HtmlGeneratorServiceTest {
@@ -34,7 +39,10 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                h1("hello j2html community")
+                h1()
+                  .with(
+                    text("hello j2html community")
+                  )
                 """);
 
     }
@@ -52,10 +60,17 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                div(
-                  h1("Title"),
-                  p("some text")
-                )
+                div()
+                  .with(
+                    h1()
+                      .with(
+                        text("Title")
+                      ),
+                    p()
+                      .with(
+                        text("some text")
+                      )
+                  )
                 """);
 
     }
@@ -75,10 +90,14 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                div(
-                  h1("Title"),
-                  p(
-                    a("a link")
+                div().with(
+                  h1().with(
+                    text("Title")
+                  ),
+                  p().with(
+                    a().with(
+                      text("a link")
+                    )
                   )
                 )
                 """);
@@ -96,7 +115,7 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 h1()
-                  .withClass("title")
+                  .withClasses("title")
                 """);
 
     }
@@ -112,7 +131,7 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 h1()
-                  .withClass("title")
+                  .withClasses("title")
                   .withId("t1")
                 """);
 
@@ -758,5 +777,34 @@ class J2HtmlGeneratorServiceTest {
 
     }
 
+    @Test
+    void shouldOutputOnlyTextAndInlineInput() throws IOException {
+
+        //language=html
+        String walk = service.generateFromHtml(null, true, null, """
+                For example, <code>&lt;section&gt;</code> should be wrapped as inline.
+                """, null, null);
+
+        System.out.println( each(
+                join(
+                        "For example, ",
+                        code().with(new UnescapedText("&lt;section&gt;")),
+                        " should be wrapped as inline."
+                )
+        ).render(IndentedHtml.inMemory()) );
+
+        assertThat(walk).isEqualTo("""
+                import static j2html.TagCreator.*;
+                                
+                each(
+                  join(
+                    "For example, ",
+                    code("&lt;section&lt;"),
+                    " should be wrapped as inline."
+                  )
+                )
+                """);
+
+    }
 
 }
