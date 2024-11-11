@@ -19,7 +19,6 @@ public class HtmlToJ2HtmlConverter {
     }
 
     public String convert(List<Node> roots) {
-        // List<Node> roots = Stream.of(root).toList();
         CodeTree codeTree = null;
         if (roots.size() == 1) {
             codeTree = convertRootElementToCode(roots.get(0));
@@ -90,6 +89,11 @@ public class HtmlToJ2HtmlConverter {
         } else if (root instanceof Comment) {
 
             // just a comment node
+            codeTree.withMethodCall(
+                    methodCall(tagLibrary.commentMethodName())
+                            .withParameter(
+                                    plainTextParameter(
+                                            tagLibrary.wrapComment(((Comment) root).getData()))));
 
         } else if (root instanceof Element) {
 
