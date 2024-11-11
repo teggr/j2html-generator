@@ -21,7 +21,6 @@ public final class MethodCall {
         sb.append(indent).append(".").append(methodName).append("(");
 
         boolean anyBuilders = parameters.stream().anyMatch(ParameterNode::isDomContent);
-        boolean allTextContent = parameters.stream().allMatch(ParameterNode::isTextContent);
 
         // if all inline then wrap in a join not each
 
@@ -35,7 +34,7 @@ public final class MethodCall {
             if (anyBuilders) {
                 sb.append("\n");
             }
-            sb.append(param.printParam(prefix, indentLevel + 1, allTextContent));
+            sb.append(param.printParam(prefix, indentLevel + 1));
         }
 
         if (anyBuilders) {

@@ -17,18 +17,18 @@ public final class ParameterNode {
         this.builder = builder;
     }
 
-    public String printParam(String prefix, int indentLevel, boolean strip) {
+    public String printParam(String prefix, int indentLevel) {
         String indent = prefix.repeat(indentLevel);
         StringBuilder sb = new StringBuilder();
         if (plainValue != null) {
-            String insertionValue = strip ? plainValue.strip() : plainValue;
+            // String insertionValue = strip ? plainValue.strip() : plainValue;
             if( raw ) {
-                sb.append(indent).append("rawHtml(\"").append(insertionValue).append("\")");
+                sb.append(indent).append("rawHtml(\"").append(plainValue).append("\")");
             }
             else if (asDomContent) {
-                sb.append(indent).append("text(\"").append(insertionValue).append("\")");
+                sb.append(indent).append("text(\"").append(plainValue).append("\")");
             } else {
-                sb.append("\"").append(insertionValue).append("\"");
+                sb.append("\"").append(plainValue).append("\"");
             }
         } else if (builder != null) {
             sb.append(builder.printBuilder(prefix, indentLevel));
@@ -40,7 +40,4 @@ public final class ParameterNode {
         return builder != null || asDomContent;
     }
 
-    public boolean isTextContent() {
-        return plainValue != null;
-    }
 }

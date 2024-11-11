@@ -344,7 +344,7 @@ class J2HtmlGeneratorServiceTest {
                     div()
                       .withClasses("col-4","col-sm-6")
                       .with(
-                        text("Level 2: .col-4 .col-sm-6")
+                        text(" Level 2: .col-4 .col-sm-6 ")
                       )
                   )
                 """);
@@ -696,7 +696,7 @@ class J2HtmlGeneratorServiceTest {
                               .with(
                                 input()
                                   .withType("checkbox"),
-                                text("\\n      I agree to the "),
+                                text(" I agree to the "),
                                 a()
                                   .withHref("#")
                                   .with(
@@ -737,23 +737,23 @@ class J2HtmlGeneratorServiceTest {
                       .withClasses("field")
                       .with(
                         div()
-                          .withClass("control")
+                          .withClasses("control")
                           .with(
                             label()
-                              .withClass("radio")
+                              .withClasses("radio")
                               .with(
                                 input()
                                   .withType("radio")
                                   .withName("question"),
-                                text("\\n      Yes\\n    ")
+                                text(" Yes ")
                               ),
                             label()
-                              .withClass("radio")
+                              .withClasses("radio")
                               .with(
                                 input()
                                   .withType("radio")
                                   .withName("question"),
-                                text("\\n      No\\n    ")
+                                text(" No ")
                               )
                           )
                       )
@@ -844,17 +844,17 @@ class J2HtmlGeneratorServiceTest {
                             div()
                               .withClasses("col")
                               .with(
-                                text("Column")
+                                text(" Column ")
                               ),
                             div()
                               .withClasses("col")
                               .with(
-                                text("Column")
+                                text(" Column ")
                               ),
                             div()
                               .withClasses("col")
                               .with(
-                                text("Column")
+                                text(" Column ")
                               )
                           )
                       )
@@ -872,23 +872,13 @@ class J2HtmlGeneratorServiceTest {
                 For example, <code>&lt;section&gt;</code> should be wrapped as inline.
                 """, null, null);
 
-        System.out.println( each(
-                join(
-                        "For example, ",
-                        code().with(new UnescapedText("&lt;section&gt;")),
-                        " should be wrapped as inline."
-                )
-        ).render(IndentedHtml.inMemory()) );
-
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
                 each(
-                  join(
-                    "For example, ",
-                    code("&lt;section&lt;"),
-                    " should be wrapped as inline."
-                  )
+                  text("For example, "),
+                  code("&lt;section&lt;"),
+                  text(" should be wrapped as inline.")
                 )
                 """);
 

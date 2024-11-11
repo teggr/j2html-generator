@@ -27,29 +27,21 @@ public class HtmlToJ2HtmlConverter {
 
         CodeTree codeTree = codeTree();
 
-//        List<Node> rootNodes = root.childNodes();
-//
-//        for (Node rootNode : rootNodes) {
+        if (root instanceof TextNode) {
 
-            Node rootNode = root;
+            // just a text node
 
-            if (rootNode instanceof TextNode) {
+        } else if (root instanceof Comment) {
 
-                // just a text node
+            // just a comment node
 
-            } else if (rootNode instanceof Comment) {
+        } else if (root instanceof Element) {
 
-                // just a comment node
+            Builder b = convertElementToBuilder((Element) root);
 
-            } else if (rootNode instanceof Element) {
+            codeTree.withBuilder(b);
 
-                Builder b = convertElementToBuilder((Element) rootNode);
-
-                codeTree.withBuilder(b);
-
-            }
-
-//        }
+        }
 
         return codeTree;
 
@@ -60,8 +52,6 @@ public class HtmlToJ2HtmlConverter {
         String tagName = element.nodeName();
 
         Builder builder = builder(tagName);
-
-        // load attributes as methods
 
         Attributes attributes = element.attributes();
         if (!attributes.isEmpty()) {
