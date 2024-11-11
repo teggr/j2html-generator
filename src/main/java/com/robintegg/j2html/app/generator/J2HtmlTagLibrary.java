@@ -3,8 +3,13 @@ package com.robintegg.j2html.app.generator;
 public class J2HtmlTagLibrary implements TagLibrary {
 
     @Override
-    public String comment(String comment) {
-        return "comment(\"" + comment + "\")";
+    public String commentMethodName() {
+        return "comment";
+    }
+
+    @Override
+    public String wrapComment(String comment) {
+        return comment;
     }
 
     @Override

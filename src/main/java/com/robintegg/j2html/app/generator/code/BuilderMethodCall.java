@@ -1,19 +1,19 @@
-package com.robintegg.j2html.app.generator.source;
+package com.robintegg.j2html.app.generator.code;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Builder {
+public final class BuilderMethodCall {
 
     private final String methodName;
-    private List<MethodCall> chainedCalls = new ArrayList<>();
+    private final List<ChainedMethodCall> chainedCalls = new ArrayList<>();
 
-    Builder(String methodName) {
+    BuilderMethodCall(String methodName) {
         this.methodName = methodName;
     }
 
-    public Builder withChainedCall(MethodCall chainedCall) {
+    public BuilderMethodCall withChainedMethodCall(ChainedMethodCall chainedCall) {
         chainedCalls.add(chainedCall);
         return this;
     }
@@ -23,11 +23,12 @@ public final class Builder {
         StringBuilder sb = new StringBuilder();
         sb.append(indent).append(methodName).append("()");
         if (!chainedCalls.isEmpty()) {
-            for (MethodCall chainedCall : chainedCalls) {
+            for (ChainedMethodCall chainedCall : chainedCalls) {
                 sb.append("\n");
                 sb.append(chainedCall.printMethod(prefix, indentLevel + 1));
             }
         }
         return sb.toString();
     }
+
 }

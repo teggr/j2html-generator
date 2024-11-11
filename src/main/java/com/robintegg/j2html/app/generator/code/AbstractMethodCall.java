@@ -1,31 +1,30 @@
-package com.robintegg.j2html.app.generator.source;
+package com.robintegg.j2html.app.generator.code;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
-import static java.util.function.Predicate.not;
-
-public final class MethodCall {
+abstract class AbstractMethodCall<T extends AbstractMethodCall<T>> {
 
     private final String methodName;
-    private List<ParameterNode> parameters = new ArrayList<>();
+    private List<Parameter> parameters = new ArrayList<>();
 
-    MethodCall(String methodName) {
+    AbstractMethodCall(String methodName) {
         this.methodName = methodName;
     }
 
     public String printMethod(String prefix, int indentLevel) {
         String indent = prefix.repeat(indentLevel);
         StringBuilder sb = new StringBuilder();
-        sb.append(indent).append(".").append(methodName).append("(");
+        sb.append(indent);
+        sb.append(prefix());
+        sb.append(methodName).append("(");
 
-        boolean anyBuilders = parameters.stream().anyMatch(ParameterNode::isDomContent);
+        boolean anyBuilders = parameters.stream().anyMatch(Parameter::isNewlineRequired);
 
         // if all inline then wrap in a join not each
 
         for (int i = 0; i < parameters.size(); i++) {
-            ParameterNode param = parameters.get(i);
+            Parameter param = parameters.get(i);
             boolean first = i == 0;
             boolean last = i == parameters.size() - 1;
             if (!first) {
@@ -45,17 +44,26 @@ public final class MethodCall {
         return sb.toString();
     }
 
-    public MethodCall withParameter(ParameterNode parameter) {
+    protected String prefix() {
+        return "";
+    }
+
+    public T withParameter(Parameter parameter) {
         parameters.add(parameter);
-        return this;
+        return self();
     }
 
     public boolean hasParameters() {
         return !parameters.isEmpty();
     }
 
-    public MethodCall withParameters(List<ParameterNode> parameterCollection) {
+    public T withParameters(List<Parameter> parameterCollection) {
         parameters.addAll(parameterCollection);
-        return this;
+        return self();
     }
+
+    protected T self() {
+        return (T) this;
+    }
+
 }

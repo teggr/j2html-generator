@@ -6,12 +6,14 @@ import org.jsoup.nodes.Node;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Service
 class J2HtmlGeneratorService implements J2HtmlGenerator {
 
-    private static Map<String,TagLibrary> tagLibrariesById = new HashMap();
+    private static Map<String, TagLibrary> tagLibrariesById = new HashMap();
 
     static {
         tagLibrariesById.put("j2htmlExtensions", new J2HtmlTagLibrary());
@@ -30,15 +32,15 @@ class J2HtmlGeneratorService implements J2HtmlGenerator {
         return j2HtmlWrapper.getJ2HtmlCode(trimmedHtml, j2HtmlCode);
     }
 
-    private Node startLocation(String htmlText, Document document) {
+    private List<Node> startLocation(String htmlText, Document document) {
         if (htmlText.contains("<html")) {
-            return document;
+            return Stream.of((Node)document).toList();
         } else if (htmlText.contains("<head")) {
-            return document.head();
+            return Stream.of((Node)document.head()).toList();
         } else if (htmlText.contains("<body")) {
-            return document.body();
+            return Stream.of((Node)document.body()).toList();
         } else {
-            return document.body().childNode(0);
+            return document.body().childNodes();
         }
     }
 

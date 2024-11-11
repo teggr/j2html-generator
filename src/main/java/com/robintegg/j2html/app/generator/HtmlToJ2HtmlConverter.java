@@ -1,13 +1,13 @@
 package com.robintegg.j2html.app.generator;
 
-import com.robintegg.j2html.app.generator.source.*;
+import com.robintegg.j2html.app.generator.code.*;
 import org.jsoup.nodes.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.robintegg.j2html.app.generator.source.CodeTreeNodeCreator.*;
+import static com.robintegg.j2html.app.generator.code.CodeTreeCreator.*;
 
 public class HtmlToJ2HtmlConverter {
 
@@ -18,18 +18,74 @@ public class HtmlToJ2HtmlConverter {
         this.tagLibrary = tagLibrary;
     }
 
-    public String convert(Node root) {
-        CodeTree codeTree = convertRootElementsToCode(root);
+    public String convert(List<Node> roots) {
+        // List<Node> roots = Stream.of(root).toList();
+        CodeTree codeTree = null;
+        if (roots.size() == 1) {
+            codeTree = convertRootElementToCode(roots.get(0));
+        } else {
+            codeTree = convertRootElementsToCode(roots);
+        }
         return codeTree.printCode(INDENT);
     }
 
-    private static CodeTree convertRootElementsToCode(Node root) {
+    private CodeTree convertRootElementsToCode(List<Node> roots) {
+
+        CodeTree codeTree = codeTree();
+
+        MethodCall each = methodCall("each");
+
+        for (Node root : roots) {
+
+            if (root instanceof TextNode) {
+
+                // just a text node
+                each.withParameter(
+                        methodCallParameter(
+                                methodCall("text")
+                                        .withParameter(
+                                                plainTextParameter(
+                                                        childText((TextNode) root)))));
+
+            } else if (root instanceof Comment) {
+
+                // just a comment node
+                each.withParameter(
+                        methodCallParameter(
+                                methodCall(tagLibrary.commentMethodName())
+                                        .withParameter(
+                                                plainTextParameter(
+                                                        tagLibrary.wrapComment(
+                                                                childComment((Comment) root))))));
+
+            } else if (root instanceof Element) {
+
+                each.withParameter(
+                        builderMethodCallParameter(
+                                convertElementToBuilder((Element) root)));
+
+            }
+
+        }
+
+        codeTree.withMethodCall(each);
+
+        return codeTree;
+
+    }
+
+    private CodeTree convertRootElementToCode(Node root) {
 
         CodeTree codeTree = codeTree();
 
         if (root instanceof TextNode) {
 
             // just a text node
+            codeTree.withMethodCall(
+                    methodCall("text")
+                            .withParameter(
+                                    plainTextParameter(
+                                            childText((TextNode) root))));
 
         } else if (root instanceof Comment) {
 
@@ -37,9 +93,8 @@ public class HtmlToJ2HtmlConverter {
 
         } else if (root instanceof Element) {
 
-            Builder b = convertElementToBuilder((Element) root);
-
-            codeTree.withBuilder(b);
+            codeTree.withBuilderMethodCall(
+                    convertElementToBuilder((Element) root));
 
         }
 
@@ -47,16 +102,16 @@ public class HtmlToJ2HtmlConverter {
 
     }
 
-    private static Builder convertElementToBuilder(Element element) {
+    private BuilderMethodCall convertElementToBuilder(Element element) {
 
         String tagName = element.nodeName();
 
-        Builder builder = builder(tagName);
+        BuilderMethodCall builderMethodCall = builder(tagName);
 
         Attributes attributes = element.attributes();
         if (!attributes.isEmpty()) {
             attributes.forEach(a -> {
-                builder.withChainedCall(convertAttributeToMethodCall(a.getKey(), a.getValue()));
+                builderMethodCall.withChainedMethodCall(convertAttributeToMethodCall(a.getKey(), a.getValue()));
             });
 
         }
@@ -65,7 +120,7 @@ public class HtmlToJ2HtmlConverter {
 
         if (!nodes.isEmpty()) {
 
-            MethodCall with = methodCall("with");
+            ChainedMethodCall with = chainedMethodCall("with");
 
             element.childNodes().forEach(childNode -> {
 
@@ -75,23 +130,33 @@ public class HtmlToJ2HtmlConverter {
                     } else if (((TextNode) childNode).isBlank() && (childNode.nextSibling() == null || childNode.nextSibling() instanceof Element)) {
                         // ignore empty text nodes at the end
                     } else {
-                        with.withParameter(valueAsDomContentParameterNode(childText((TextNode) childNode)));
+                        with.withParameter(methodCallParameter(
+                                methodCall("text")
+                                        .withParameter(
+                                                plainTextParameter(
+                                                        childText((TextNode) childNode)))));
                     }
                 } else if (childNode instanceof Comment) {
-                    with.withParameter(commentParameterNode( "<!--" + ((Comment)childNode).getData() + "-->" ));
+                    with.withParameter(methodCallParameter(
+                                    methodCall(tagLibrary.commentMethodName())
+                                            .withParameter(
+                                                    plainTextParameter(
+                                                            tagLibrary.wrapComment(((Comment) childNode).getData())))));
                 } else if (childNode instanceof Element) {
-                    with.withParameter(builderParameterNode(convertElementToBuilder((Element) childNode)));
+                    with.withParameter(
+                            builderMethodCallParameter(
+                                    convertElementToBuilder((Element) childNode)));
                 }
 
             });
 
             if (with.hasParameters()) {
-                builder.withChainedCall(with);
+                builderMethodCall.withChainedMethodCall(with);
             }
 
         }
 
-        return builder;
+        return builderMethodCall;
 
     }
 
@@ -99,23 +164,27 @@ public class HtmlToJ2HtmlConverter {
         return childNode.text().replace("\"", "\\\"");
     }
 
-    private static MethodCall convertAttributeToMethodCall(String key, String value) {
+    private static String childComment(Comment childNode) {
+        return childNode.getData().replace("\"", "\\\"");
+    }
+
+    private static ChainedMethodCall convertAttributeToMethodCall(String key, String value) {
         return switch (key) {
-            case "class" -> methodCall("withClasses").withParameters(classList(value));
-            case "id" -> methodCall("withId").withParameter(valueParameterNode(value));
-            case "href" -> methodCall("withHref").withParameter(valueParameterNode(value));
-            case "src" -> methodCall("withSrc").withParameter(valueParameterNode(value));
-            case "alt" -> methodCall("withAlt").withParameter(valueParameterNode(value));
-            case "type" -> methodCall("withType").withParameter(valueParameterNode(value));
-            case "name" -> methodCall("withName").withParameter(valueParameterNode(value));
+            case "class" -> chainedMethodCall("withClasses").withParameters(classList(value));
+            case "id" -> chainedMethodCall("withId").withParameter(plainTextParameter(value));
+            case "href" -> chainedMethodCall("withHref").withParameter(plainTextParameter(value));
+            case "src" -> chainedMethodCall("withSrc").withParameter(plainTextParameter(value));
+            case "alt" -> chainedMethodCall("withAlt").withParameter(plainTextParameter(value));
+            case "type" -> chainedMethodCall("withType").withParameter(plainTextParameter(value));
+            case "name" -> chainedMethodCall("withName").withParameter(plainTextParameter(value));
             default ->
-                    methodCall("attr").withParameter(valueParameterNode(key)).withParameter(valueParameterNode(value));
+                    chainedMethodCall("attr").withParameter(plainTextParameter(key)).withParameter(plainTextParameter(value));
         };
     }
 
-    private static List<ParameterNode> classList(String value) {
+    private static List<Parameter> classList(String value) {
         return Stream.of(value.split("\\s"))
-                .map(CodeTreeNodeCreator::valueParameterNode)
+                .map(CodeTreeCreator::plainTextParameter)
                 .collect(Collectors.toList());
     }
 

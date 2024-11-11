@@ -1,13 +1,10 @@
 package com.robintegg.j2html.app.generator;
 
-import j2html.rendering.IndentedHtml;
-import j2html.tags.UnescapedText;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static j2html.TagCreator.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class J2HtmlGeneratorServiceTest {
@@ -877,10 +874,43 @@ class J2HtmlGeneratorServiceTest {
                                 
                 each(
                   text("For example, "),
-                  code("&lt;section&lt;"),
+                  code()
+                    .with(
+                      text("<section>")
+                    ),
                   text(" should be wrapped as inline.")
                 )
                 """);
+
+    }
+
+    @Nested
+    class J2HtmlExtensions {
+
+        @Test
+        void shouldOuputCommentMethods() {
+
+            String walk = service.generateFromHtml(null, true, "j2htmlExtensions", """
+                For example, <code>&lt;section&gt;</code> should be wrapped as inline.
+                <!-- a comment -->
+                """, null, null);
+
+            assertThat(walk).isEqualTo("""
+                import static j2html.TagCreator.*;
+                import static dev.rebelcraft.j2html.ext.ExtendedTagCreator.*;
+                                
+                each(
+                  text("For example, "),
+                  code()
+                    .with(
+                      text("<section>")
+                    ),
+                  text(" should be wrapped as inline. "),
+                  comment(" a comment ")
+                )
+                """);
+
+        }
 
     }
 
