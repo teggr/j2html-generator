@@ -1,9 +1,13 @@
 package com.robintegg.j2html.app.generator;
 
-import org.jsoup.nodes.Node;
+import com.robintegg.j2html.app.generator.source.*;
+import org.jsoup.nodes.*;
 
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.robintegg.j2html.app.generator.source.CodeTreeNodeCreator.*;
 
 public class HtmlToJ2HtmlConverter {
 
@@ -14,87 +18,115 @@ public class HtmlToJ2HtmlConverter {
         this.tagLibrary = tagLibrary;
     }
 
-    public String walk(Node root) {
-//        SourceCodeNode sourceCodeNode = new CodeNode();
-//        convertElementToCode(root, sourceCodeNode);
-//        return sourceCodeNode.printSource();
-        return "";
+    public String convert(Node root) {
+        CodeTree codeTree = convertRootElementsToCode(root);
+        return codeTree.printCode(INDENT);
     }
 
-    private static void convertElementToCode(Node node) {
+    private static CodeTree convertRootElementsToCode(Node root) {
 
-//        // Handle LEAF(text) nodes
-//        if (node instanceof TextNode) {
-//            StringBuilder text = new StringBuilder();
-//            text.append("text(\"")
-//                    .append(((TextNode) node).text().replace("\"", "\\\""))
-//                    .append("\")");
-//            parent.addChild(new SourceCodeNode(text.toString()));
-//            return;
-//        }
+        CodeTree codeTree = codeTree();
+
+//        List<Node> rootNodes = root.childNodes();
 //
-//        Element element = (Element) node;
-//
-//        // Map JSoup element to j2html code based on tag
-//        SourceCodeNode currentNode = new SourceCodeNode(element.tagName() + "()");
-//        parent.addChild(currentNode);
-//
-//        // Append attributes
-//        element.attributes().forEach(attr -> {
-//            StringBuilder attrText = new StringBuilder();
-//            addAttribute(attrText, attr.getKey(), attr.getValue());
-//            currentNode.addChild(new SourceCodeNode(attrText.toString()));
-//        });
-//
-//        List<Node> children = element.childNodes();
-//
-//        if (!children.isEmpty()) {
-//
-//            SourceCodeNode childContainer = new SourceCodeNode(".with(");
-//            currentNode.addChild(childContainer);
-//
-//            for (Node child : children) {
-//
-//                if (child instanceof TextNode) {
-//                    if (((TextNode) child).isBlank() && (child.previousSibling() == null || child.previousSibling() instanceof Element)) {
-//                        // ignore empty text nodes at the start
-//                    } else if (((TextNode) child).isBlank() && (child.nextSibling() == null || child.nextSibling() instanceof Element)) {
-//                        // ignore empty text nodes at the end
-//                    } else {
-//                        StringBuilder childBuilder = new StringBuilder();
-//                        childBuilder.append("text(\"").append(((TextNode) child).text().replace("\"", "\\\"")).append("\")");
-//                        childContainer.addChild(new SourceCodeNode(childBuilder.toString()));
-//                    }
-//                } else if (child instanceof Element) {
-//                    StringBuilder childBuilder = new StringBuilder();
-//                    convertElementToCode((Element) child, childContainer);
-//                }
-//            }
-//
-//            SourceCodeNode endchildContainer = new SourceCodeNode(")");
-//            currentNode.addChild(endchildContainer);
-//
+//        for (Node rootNode : rootNodes) {
+
+            Node rootNode = root;
+
+            if (rootNode instanceof TextNode) {
+
+                // just a text node
+
+            } else if (rootNode instanceof Comment) {
+
+                // just a comment node
+
+            } else if (rootNode instanceof Element) {
+
+                Builder b = convertElementToBuilder((Element) rootNode);
+
+                codeTree.withBuilder(b);
+
+            }
+
 //        }
 
+        return codeTree;
 
     }
 
-    private static void addAttribute(StringBuilder builder, String key, String value) {
-        switch (key) {
-            case "class" -> builder.append(".withClasses(").append(classList(value)).append(")");
-            case "id" -> builder.append(".withId(\"").append(value).append("\")");
-            case "href" -> builder.append(".withHref(\"").append(value).append("\")");
-            case "src" -> builder.append(".withSrc(\"").append(value).append("\")");
-            case "alt" -> builder.append(".withAlt(\"").append(value).append("\")");
-            case "title" -> builder.append(".withTitle(\"").append(value).append("\")");
-            default -> builder.append(".attr(\"").append(key).append("\", \"").append(value).append("\")");
+    private static Builder convertElementToBuilder(Element element) {
+
+        String tagName = element.nodeName();
+
+        Builder builder = builder(tagName);
+
+        // load attributes as methods
+
+        Attributes attributes = element.attributes();
+        if (!attributes.isEmpty()) {
+            attributes.forEach(a -> {
+                builder.withChainedCall(convertAttributeToMethodCall(a.getKey(), a.getValue()));
+            });
+
         }
+
+        List<Node> nodes = element.childNodes();
+
+        if (!nodes.isEmpty()) {
+
+            MethodCall with = methodCall("with");
+
+            element.childNodes().forEach(childNode -> {
+
+                if (childNode instanceof TextNode) {
+                    if (((TextNode) childNode).isBlank() && (childNode.previousSibling() == null || childNode.previousSibling() instanceof Element)) {
+                        // ignore empty text nodes at the start
+                    } else if (((TextNode) childNode).isBlank() && (childNode.nextSibling() == null || childNode.nextSibling() instanceof Element)) {
+                        // ignore empty text nodes at the end
+                    } else {
+                        with.withParameter(valueAsDomContentParameterNode(childText((TextNode) childNode)));
+                    }
+                } else if (childNode instanceof Comment) {
+                    with.withParameter(commentParameterNode( "<!--" + ((Comment)childNode).getData() + "-->" ));
+                } else if (childNode instanceof Element) {
+                    with.withParameter(builderParameterNode(convertElementToBuilder((Element) childNode)));
+                }
+
+            });
+
+            if (with.hasParameters()) {
+                builder.withChainedCall(with);
+            }
+
+        }
+
+        return builder;
+
     }
 
-    private static String classList(String value) {
+    private static String childText(TextNode childNode) {
+        return childNode.text().replace("\"", "\\\"");
+    }
+
+    private static MethodCall convertAttributeToMethodCall(String key, String value) {
+        return switch (key) {
+            case "class" -> methodCall("withClasses").withParameters(classList(value));
+            case "id" -> methodCall("withId").withParameter(valueParameterNode(value));
+            case "href" -> methodCall("withHref").withParameter(valueParameterNode(value));
+            case "src" -> methodCall("withSrc").withParameter(valueParameterNode(value));
+            case "alt" -> methodCall("withAlt").withParameter(valueParameterNode(value));
+            case "type" -> methodCall("withType").withParameter(valueParameterNode(value));
+            case "name" -> methodCall("withName").withParameter(valueParameterNode(value));
+            default ->
+                    methodCall("attr").withParameter(valueParameterNode(key)).withParameter(valueParameterNode(value));
+        };
+    }
+
+    private static List<ParameterNode> classList(String value) {
         return Stream.of(value.split("\\s"))
-                .map(c -> "\"" + c + "\"")
-                .collect(Collectors.joining(","));
+                .map(CodeTreeNodeCreator::valueParameterNode)
+                .collect(Collectors.toList());
     }
 
 }

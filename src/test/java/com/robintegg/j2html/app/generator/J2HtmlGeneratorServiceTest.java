@@ -90,16 +90,20 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                div().with(
-                  h1().with(
-                    text("Title")
-                  ),
-                  p().with(
-                    a().with(
-                      text("a link")
-                    )
+                div()
+                  .with(
+                    h1()
+                      .with(
+                        text("Title")
+                      ),
+                    p()
+                      .with(
+                        a()
+                          .with(
+                            text("a link")
+                          )
+                      )
                   )
-                )
                 """);
 
     }
@@ -147,8 +151,11 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                h1("hello j2html community")
-                  .withClass("title")
+                h1()
+                  .withClasses("title")
+                  .with(
+                    text("hello j2html community")
+                  )
                 """);
 
     }
@@ -166,13 +173,20 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                div(
-                  h1("Title")
-                    .withClass("title"),
-                  p("some text")
-                    .withClass("content")
-                    .withId("p1")
-                )
+                div()
+                  .with(
+                    h1()
+                      .withClasses("title")
+                      .with(
+                        text("Title")
+                      ),
+                    p()
+                      .withClasses("content")
+                      .withId("p1")
+                      .with(
+                        text("some text")
+                      )
+                  )
                 """);
 
     }
@@ -192,13 +206,21 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                div(
-                  h1("Title"),
-                  p(
-                    a("a link")
-                      .withHref("/some/url")
+                div()
+                  .with(
+                    h1()
+                      .with(
+                        text("Title")
+                      ),
+                    p()
+                      .with(
+                        a()
+                          .withHref("/some/url")
+                          .with(
+                            text("a link")
+                          )
+                      )
                   )
-                )
                 """);
 
     }
@@ -213,10 +235,14 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                a(
-                  text("hello "),
-                  span("j2html community")
-                )
+                a()
+                  .with(
+                    text("hello "),
+                    span()
+                      .with(
+                        text("j2html community")
+                      )
+                  )
                 """);
 
     }
@@ -235,7 +261,10 @@ class J2HtmlGeneratorServiceTest {
                   .withHref("/some/url")
                   .with(
                     text("hello "),
-                    span("j2html community")
+                    span()
+                      .with(
+                        text("j2html community")
+                      )
                   )
                 """);
 
@@ -252,7 +281,7 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 h1()
-                  .withClass("title")
+                  .withClasses("title")
                 """);
 
     }
@@ -268,7 +297,7 @@ class J2HtmlGeneratorServiceTest {
                 import static j2html.TagCreator.*;
                                 
                 h1()
-                  .withClasses("title", "other")
+                  .withClasses("title","other")
                 """);
 
     }
@@ -286,9 +315,10 @@ class J2HtmlGeneratorServiceTest {
         assertThat(walk).isEqualTo("""
                 import static j2html.TagCreator.*;
                                 
-                div(
-                  rawHtml("<!-- this is some comment -->")
-                )
+                div()
+                  .with(
+                    rawHtml("<!-- this is some comment -->")
+                  )
                 """);
 
     }
@@ -311,8 +341,11 @@ class J2HtmlGeneratorServiceTest {
                 div()
                   .withId("parent")
                   .with(
-                    div("Level 2: .col-4 .col-sm-6")
-                      .withClasses("col-4", "col-sm-6")
+                    div()
+                      .withClasses("col-4","col-sm-6")
+                      .with(
+                        text("Level 2: .col-4 .col-sm-6")
+                      )
                   )
                 """);
 
@@ -341,24 +374,32 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     form()
-                      .withClasses("table", "rows")
+                      .withClasses("table","rows")
                       .with(
-                        p(
-                          label("Name")
-                            .attr("for", "name"),
-                          input()
-                            .withType("text")
-                            .withId("name")
-                            .withName("name")
-                        ),
-                        p(
-                          label("Address")
-                            .attr("for", "adr"),
-                          input()
-                            .withType("text")
-                            .withId("adr")
-                            .withName("adr")
-                        )
+                        p()
+                          .with(
+                            label()
+                              .attr("for","name")
+                              .with(
+                                text("Name")
+                              ),
+                            input()
+                              .withType("text")
+                              .withId("name")
+                              .withName("name")
+                          ),
+                        p()
+                          .with(
+                            label()
+                              .attr("for","adr")
+                              .with(
+                                text("Address")
+                              ),
+                            input()
+                              .withType("text")
+                              .withId("adr")
+                              .withName("adr")
+                          )
                       )
                     """);
 
@@ -386,17 +427,20 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClass("field")
+                      .withClasses("field")
                       .with(
-                        label("Name")
-                          .withClass("label"),
+                        label()
+                          .withClasses("label")
+                          .with(
+                            text("Name")
+                          ),
                         div()
-                          .withClass("control")
+                          .withClasses("control")
                           .with(
                             input()
-                              .withClass("input")
+                              .withClasses("input")
                               .withType("text")
-                              .attr("placeholder", "Text input")
+                              .attr("placeholder","Text input")
                           )
                       )
                     """);
@@ -429,33 +473,39 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClass("field")
+                      .withClasses("field")
                       .with(
-                        label("Username")
-                          .withClass("label"),
+                        label()
+                          .withClasses("label")
+                          .with(
+                            text("Username")
+                          ),
                         div()
-                          .withClasses("control", "has-icons-left", "has-icons-right")
+                          .withClasses("control","has-icons-left","has-icons-right")
                           .with(
                             input()
-                              .withClasses("input", "is-success")
+                              .withClasses("input","is-success")
                               .withType("text")
-                              .attr("placeholder", "Text input")
-                              .attr("value", "bulma"),
+                              .attr("placeholder","Text input")
+                              .attr("value","bulma"),
                             span()
-                              .withClasses("icon", "is-small", "is-left")
+                              .withClasses("icon","is-small","is-left")
                               .with(
                                 i()
-                                  .withClasses("fas", "fa-user")
+                                  .withClasses("fas","fa-user")
                               ),
                             span()
-                              .withClasses("icon", "is-small", "is-right")
+                              .withClasses("icon","is-small","is-right")
                               .with(
                                 i()
-                                  .withClasses("fas", "fa-check")
+                                  .withClasses("fas","fa-check")
                               )
                           ),
-                        p("This username is available")
-                          .withClasses("help", "is-success")
+                        p()
+                          .withClasses("help","is-success")
+                          .with(
+                            text("This username is available")
+                          )
                       )
                     """);
 
@@ -487,33 +537,39 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClass("field")
+                      .withClasses("field")
                       .with(
-                        label("Email")
-                          .withClass("label"),
+                        label()
+                          .withClasses("label")
+                          .with(
+                            text("Email")
+                          ),
                         div()
-                          .withClasses("control", "has-icons-left", "has-icons-right")
+                          .withClasses("control","has-icons-left","has-icons-right")
                           .with(
                             input()
-                              .withClasses("input", "is-danger")
+                              .withClasses("input","is-danger")
                               .withType("email")
-                              .attr("placeholder", "Email input")
-                              .attr("value", "hello@"),
+                              .attr("placeholder","Email input")
+                              .attr("value","hello@"),
                             span()
-                              .withClasses("icon", "is-small", "is-left")
+                              .withClasses("icon","is-small","is-left")
                               .with(
                                 i()
-                                  .withClasses("fas", "fa-envelope")
+                                  .withClasses("fas","fa-envelope")
                               ),
                             span()
-                              .withClasses("icon", "is-small", "is-right")
+                              .withClasses("icon","is-small","is-right")
                               .with(
                                 i()
-                                  .withClasses("fas", "fa-exclamation-triangle")
+                                  .withClasses("fas","fa-exclamation-triangle")
                               )
                           ),
-                        p("This email is invalid")
-                          .withClasses("help", "is-danger")
+                        p()
+                          .withClasses("help","is-danger")
+                          .with(
+                            text("This email is invalid")
+                          )
                       )
                     """);
 
@@ -542,20 +598,30 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClass("field")
+                      .withClasses("field")
                       .with(
-                        label("Subject")
-                          .withClass("label"),
+                        label()
+                          .withClasses("label")
+                          .with(
+                            text("Subject")
+                          ),
                         div()
-                          .withClass("control")
+                          .withClasses("control")
                           .with(
                             div()
-                              .withClass("select")
+                              .withClasses("select")
                               .with(
-                                select(
-                                  option("Select dropdown"),
-                                  option("With options")
-                                )
+                                select()
+                                  .with(
+                                    option()
+                                      .with(
+                                        text("Select dropdown")
+                                      ),
+                                    option()
+                                      .with(
+                                        text("With options")
+                                      )
+                                  )
                               )
                           )
                       )
@@ -581,16 +647,19 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClass("field")
+                      .withClasses("field")
                       .with(
-                        label("Message")
-                          .withClass("label"),
+                        label()
+                          .withClasses("label")
+                          .with(
+                            text("Message")
+                          ),
                         div()
-                          .withClass("control")
+                          .withClasses("control")
                           .with(
                             textarea()
-                              .withClass("textarea")
-                              .attr("placeholder", "Textarea")
+                              .withClasses("textarea")
+                              .attr("placeholder","Textarea")
                           )
                       )
                     """);
@@ -617,19 +686,22 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClass("field")
+                      .withClasses("field")
                       .with(
                         div()
-                          .withClass("control")
+                          .withClasses("control")
                           .with(
                             label()
-                              .withClass("checkbox")
+                              .withClasses("checkbox")
                               .with(
                                 input()
                                   .withType("checkbox"),
                                 text("\\n      I agree to the "),
-                                a("terms and conditions")
+                                a()
                                   .withHref("#")
+                                  .with(
+                                    text("terms and conditions")
+                                  )
                               )
                           )
                       )
@@ -662,7 +734,7 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClass("field")
+                      .withClasses("field")
                       .with(
                         div()
                           .withClass("control")
@@ -709,19 +781,25 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClasses("field", "is-grouped")
+                      .withClasses("field","is-grouped")
                       .with(
                         div()
-                          .withClass("control")
+                          .withClasses("control")
                           .with(
-                            button("Submit")
-                              .withClasses("button", "is-link")
+                            button()
+                              .withClasses("button","is-link")
+                              .with(
+                                text("Submit")
+                              )
                           ),
                         div()
-                          .withClass("control")
+                          .withClasses("control")
                           .with(
-                            button("Cancel")
-                              .withClasses("button", "is-link", "is-light")
+                            button()
+                              .withClasses("button","is-link","is-light")
+                              .with(
+                                text("Cancel")
+                              )
                           )
                       )
                     """);
@@ -758,17 +836,26 @@ class J2HtmlGeneratorServiceTest {
                     import static j2html.TagCreator.*;
                                     
                     div()
-                      .withClasses("container", "text-center")
+                      .withClasses("container","text-center")
                       .with(
                         div()
-                          .withClass("row")
+                          .withClasses("row")
                           .with(
-                            div("Column")
-                              .withClass("col"),
-                            div("Column")
-                              .withClass("col"),
-                            div("Column")
-                              .withClass("col")
+                            div()
+                              .withClasses("col")
+                              .with(
+                                text("Column")
+                              ),
+                            div()
+                              .withClasses("col")
+                              .with(
+                                text("Column")
+                              ),
+                            div()
+                              .withClasses("col")
+                              .with(
+                                text("Column")
+                              )
                           )
                       )
                     """);

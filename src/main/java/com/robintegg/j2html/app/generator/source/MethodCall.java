@@ -2,6 +2,9 @@ package com.robintegg.j2html.app.generator.source;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.function.Predicate.not;
 
 public final class MethodCall {
 
@@ -17,7 +20,8 @@ public final class MethodCall {
         StringBuilder sb = new StringBuilder();
         sb.append(indent).append(".").append(methodName).append("(");
 
-        boolean anyBuilders = parameters.stream().anyMatch(ParameterNode::isBuilder);
+        boolean anyBuilders = parameters.stream().anyMatch(ParameterNode::isDomContent);
+        boolean allTextContent = parameters.stream().allMatch(ParameterNode::isTextContent);
 
         // if all inline then wrap in a join not each
 
@@ -31,7 +35,7 @@ public final class MethodCall {
             if (anyBuilders) {
                 sb.append("\n");
             }
-            sb.append(param.printParam(prefix, indentLevel + 1, (anyBuilders && !param.isBuilder())));
+            sb.append(param.printParam(prefix, indentLevel + 1, allTextContent));
         }
 
         if (anyBuilders) {
@@ -42,8 +46,17 @@ public final class MethodCall {
         return sb.toString();
     }
 
-    public void addParameter(ParameterNode parameter) {
+    public MethodCall withParameter(ParameterNode parameter) {
         parameters.add(parameter);
+        return this;
     }
 
+    public boolean hasParameters() {
+        return !parameters.isEmpty();
+    }
+
+    public MethodCall withParameters(List<ParameterNode> parameterCollection) {
+        parameters.addAll(parameterCollection);
+        return this;
+    }
 }

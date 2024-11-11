@@ -60,11 +60,11 @@ class SourceCodeNodeTest {
         builder.withChainedCall(with);
 
         MethodCall withId = methodCall("withId");
-        withId.addParameter(valueParameterNode("some-id"));
+        withId.withParameter(valueParameterNode("some-id"));
         builder.withChainedCall(withId);
 
         MethodCall withHef = methodCall("withHef");
-        withHef.addParameter(valueParameterNode("http://"));
+        withHef.withParameter(valueParameterNode("http://"));
         builder.withChainedCall(withHef);
 
         codeTree.withBuilder(builder);
@@ -89,12 +89,12 @@ class SourceCodeNodeTest {
         builder.withChainedCall(with);
 
         MethodCall withId = methodCall("withId");
-        withId.addParameter(valueParameterNode("some-id"));
+        withId.withParameter(valueParameterNode("some-id"));
         builder.withChainedCall(withId);
 
         MethodCall withHef = methodCall("withHef");
-        withHef.addParameter(valueParameterNode("http://"));
-        withHef.addParameter(valueParameterNode("something else"));
+        withHef.withParameter(valueParameterNode("http://"));
+        withHef.withParameter(valueParameterNode("something else"));
         builder.withChainedCall(withHef);
 
         codeTree.withBuilder(builder);
@@ -116,17 +116,17 @@ class SourceCodeNodeTest {
         Builder builder = builder("h1");
 
         MethodCall withId = methodCall("withId");
-        withId.addParameter(valueParameterNode("some-id"));
+        withId.withParameter(valueParameterNode("some-id"));
         builder.withChainedCall(withId);
 
         MethodCall withHef = methodCall("withHef");
-        withHef.addParameter( valueParameterNode("http://"));
+        withHef.withParameter( valueParameterNode("http://"));
         builder.withChainedCall(withHef);
 
         Builder pb = builder("p");
 
         MethodCall with = methodCall("with");
-        with.addParameter(builderParameterNode(pb));
+        with.withParameter(builderParameterNode(pb));
         builder.withChainedCall(with);
 
         codeTree.withBuilder(builder);
@@ -150,19 +150,19 @@ class SourceCodeNodeTest {
         Builder builder = builder("h1");
 
         MethodCall withId = methodCall("withId");
-        withId.addParameter(valueParameterNode("some-id"));
+        withId.withParameter(valueParameterNode("some-id"));
         builder.withChainedCall(withId);
 
         MethodCall withHef = methodCall("withHef");
-        withHef.addParameter(valueParameterNode("http://"));
+        withHef.withParameter(valueParameterNode("http://"));
         builder.withChainedCall(withHef);
 
         Builder pb = builder("p");
         Builder div = builder("div");
 
         MethodCall with = methodCall("with");
-        with.addParameter(builderParameterNode(pb));
-        with.addParameter(builderParameterNode(div));
+        with.withParameter(builderParameterNode(pb));
+        with.withParameter(builderParameterNode(div));
         builder.withChainedCall(with);
 
         codeTree.withBuilder(builder);
@@ -187,24 +187,24 @@ class SourceCodeNodeTest {
         Builder builder = builder("h1");
 
         MethodCall withId = methodCall("withId");
-        withId.addParameter(valueParameterNode("some-id"));
+        withId.withParameter(valueParameterNode("some-id"));
         builder.withChainedCall(withId);
 
         MethodCall withHef = methodCall("withHef");
-        withHef.addParameter(valueParameterNode("http://"));
+        withHef.withParameter(valueParameterNode("http://"));
         builder.withChainedCall(withHef);
 
         Builder pb = builder("p");
 
         Builder div = builder("div");
         MethodCall nestedWith = methodCall("with");
-        nestedWith.addParameter(builderParameterNode(builder("a")));
-        nestedWith.addParameter(builderParameterNode(builder("hr")));
+        nestedWith.withParameter(builderParameterNode(builder("a")));
+        nestedWith.withParameter(builderParameterNode(builder("hr")));
         div.withChainedCall(nestedWith);
 
         MethodCall with = methodCall("with");
-        with.addParameter(builderParameterNode(pb));
-        with.addParameter(builderParameterNode(div));
+        with.withParameter(builderParameterNode(pb));
+        with.withParameter(builderParameterNode(div));
         builder.withChainedCall(with);
 
         codeTree.withBuilder(builder);
@@ -233,27 +233,27 @@ class SourceCodeNodeTest {
         Builder builder = builder("h1");
 
         MethodCall withId = methodCall("withId");
-        withId.addParameter(valueParameterNode("some-id"));
+        withId.withParameter(valueParameterNode("some-id"));
         builder.withChainedCall(withId);
 
         MethodCall withHef = methodCall("withHef");
-        withHef.addParameter(valueParameterNode("http://"));
+        withHef.withParameter(valueParameterNode("http://"));
         builder.withChainedCall(withHef);
 
         Builder pb = builder("p");
 
         Builder div = builder("div");
         MethodCall nestedWith = methodCall("with");
-        nestedWith.addParameter(builderParameterNode(builder("a")));
-        nestedWith.addParameter(builderParameterNode(builder("hr")));
+        nestedWith.withParameter(builderParameterNode(builder("a")));
+        nestedWith.withParameter(builderParameterNode(builder("hr")));
         div.withChainedCall(nestedWith);
 
         MethodCall with = methodCall("with");
-        with.addParameter(valueParameterNode("start value"));
-        with.addParameter(builderParameterNode(pb));
-        with.addParameter(valueParameterNode("middle value"));
-        with.addParameter(builderParameterNode(div));
-        with.addParameter(valueParameterNode("end value"));
+        with.withParameter(valueAsDomContentParameterNode("start value"));
+        with.withParameter(builderParameterNode(pb));
+        with.withParameter(valueAsDomContentParameterNode("middle value"));
+        with.withParameter(builderParameterNode(div));
+        with.withParameter(valueAsDomContentParameterNode("end value"));
         builder.withChainedCall(with);
 
         codeTree.withBuilder(builder);

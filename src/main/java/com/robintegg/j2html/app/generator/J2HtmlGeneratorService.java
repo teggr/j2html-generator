@@ -25,7 +25,7 @@ class J2HtmlGeneratorService implements J2HtmlGenerator {
         HtmlToJ2HtmlConverter walker = new HtmlToJ2HtmlConverter(tagLibrary);
         String trimmedHtml = htmlText.trim();
         Document document = Jsoup.parse(trimmedHtml);
-        String j2HtmlCode = walker.walk(startLocation(trimmedHtml, document));
+        String j2HtmlCode = walker.convert(startLocation(trimmedHtml, document));
         J2HtmlWrapper j2HtmlWrapper = new J2HtmlWrapper(packageName, includeImports, tagLibrary, template, testName);
         return j2HtmlWrapper.getJ2HtmlCode(trimmedHtml, j2HtmlCode);
     }

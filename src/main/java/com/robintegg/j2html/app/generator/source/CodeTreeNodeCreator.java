@@ -15,7 +15,15 @@ public class CodeTreeNodeCreator {
     }
 
     public static ParameterNode valueParameterNode(String value) {
-        return new ParameterNode(value);
+        return new ParameterNode(value, false, false);
+    }
+
+    public static ParameterNode valueAsDomContentParameterNode(String value) {
+        return new ParameterNode(value, true, false);
+    }
+
+    public static ParameterNode commentParameterNode(String value) {
+        return new ParameterNode(value, true, true);
     }
 
     public static ParameterNode builderParameterNode(Builder builder) {
