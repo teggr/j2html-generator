@@ -22,6 +22,10 @@ public class CodeTreeCreator {
         return new PlainTextParameter(plainText);
     }
 
+    public static BooleanParameter booleanParameter(boolean booleanValue) {
+        return new BooleanParameter(booleanValue);
+    }
+
     public static MethodCallParameter methodCallParameter(MethodCall methodCall) {
         return new MethodCallParameter(methodCall);
     }

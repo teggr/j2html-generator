@@ -181,9 +181,24 @@ public class HtmlToJ2HtmlConverter {
             case "alt" -> chainedMethodCall("withAlt").withParameter(plainTextParameter(value));
             case "type" -> chainedMethodCall("withType").withParameter(plainTextParameter(value));
             case "name" -> chainedMethodCall("withName").withParameter(plainTextParameter(value));
+            case "scope" -> chainedMethodCall("withScope").withParameter(plainTextParameter(value));
+            case "colspan" -> chainedMethodCall("withColspan").withParameter(plainTextParameter(value));
+            case "for" -> chainedMethodCall("withFor").withParameter(plainTextParameter(value));
+            case "placeholder" -> chainedMethodCall("withPlaceholder").withParameter(plainTextParameter(value));
+            case "rows" -> chainedMethodCall("withRows").withParameter(plainTextParameter(value));
+            case "value" -> chainedMethodCall("withValue").withParameter(plainTextParameter(value));
+            case "title" -> chainedMethodCall("withTitle").withParameter(plainTextParameter(value));
+            case "list" -> chainedMethodCall("withList").withParameter(plainTextParameter(value));
+            case "disabled" -> chainedMethodCall("withCondDisabled").withParameter(booleanParameterFromValue(value));
+            case "readonly" -> chainedMethodCall("withCondReadonly").withParameter(booleanParameterFromValue(value));
+            case "multiple" -> chainedMethodCall("withMultiple").withParameter(booleanParameterFromValue(value));
             default ->
                     chainedMethodCall("attr").withParameter(plainTextParameter(key)).withParameter(plainTextParameter(value));
         };
+    }
+
+    private static BooleanParameter booleanParameterFromValue(String value) {
+        return booleanParameter( value == null || value.isBlank() || !"false".equalsIgnoreCase(value) );
     }
 
     private static List<Parameter> classList(String value) {
